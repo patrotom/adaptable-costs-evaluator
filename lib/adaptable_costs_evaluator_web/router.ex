@@ -19,10 +19,11 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", AdaptableCostsEvaluatorWeb do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", AdaptableCostsEvaluatorWeb do
+    pipe_through :api
+
+    resources "/users", UserController
+  end
 
   # Enables LiveDashboard only for development
   #
