@@ -14,7 +14,8 @@ defmodule AdaptableCostsEvaluatorWeb.ErrorView do
     Phoenix.Controller.status_message_from_template(template)
   end
 
-  def render("401.json", _assigns) do
-    %{errors: ["Authorization failed"]}
+  def render("401.json", assigns) do
+    errors = Map.get(assigns, :errors, ["authorization failed"])
+    %{errors: errors}
   end
 end

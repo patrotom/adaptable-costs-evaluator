@@ -1,12 +1,18 @@
 defmodule AdaptableCostsEvaluatorWeb.Router do
   use AdaptableCostsEvaluatorWeb, :router
 
+  alias AdaptableCostsEvaluatorWeb.Pipelines.{JWTAuthPipeline}
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+  end
+
+  pipeline :jwt_authenticated do
+    plug JWTAuthPipeline
   end
 
   pipeline :api do
@@ -22,8 +28,14 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
   scope "/api/v1", AdaptableCostsEvaluatorWeb do
     pipe_through :api
 
-    resources "/users", UserController
+    resources "/users", UserController, only: [:create]
     post "/sign_in", UserController, :sign_in
+  end
+
+  scope "/api/v1", AdaptableCostsEvaluatorWeb do
+    pipe_through [:api, :jwt_authenticated]
+
+    resources "/users", UserController, except: [:create]
   end
 
   # Enables LiveDashboard only for development
