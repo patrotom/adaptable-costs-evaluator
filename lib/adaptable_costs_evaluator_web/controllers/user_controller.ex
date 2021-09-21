@@ -1,7 +1,7 @@
 defmodule AdaptableCostsEvaluatorWeb.UserController do
   use AdaptableCostsEvaluatorWeb, :controller
 
-  alias AdaptableCostsEvaluator.Users
+  alias AdaptableCostsEvaluator.{Users, Guardian}
   alias AdaptableCostsEvaluator.Users.User
 
   action_fallback AdaptableCostsEvaluatorWeb.FallbackController
@@ -12,11 +12,12 @@ defmodule AdaptableCostsEvaluatorWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Users.create_user(user_params) do
+    with {:ok, %User{} = user} <- Users.create_user(user_params),
+         {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.user_path(conn, :show, user))
-      |> render("show.json", user: user)
+      |> render("show.json", user: %{user | token: token})
     end
   end
 
@@ -38,6 +39,16 @@ defmodule AdaptableCostsEvaluatorWeb.UserController do
 
     with {:ok, %User{}} <- Users.delete_user(user) do
       send_resp(conn, :no_content, "")
+    end
+  end
+
+  def sign_in(conn, %{"data" => %{"email" => email, "password" => password}}) do
+    case Users.token_sign_in(email, password) do
+      {:ok, token, _claims} ->
+        conn
+        |> render("token.json", token: token)
+      _ ->
+        {:error, :unauthorized}
     end
   end
 end

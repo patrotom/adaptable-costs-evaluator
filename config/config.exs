@@ -18,6 +18,10 @@ config :adaptable_costs_evaluator, AdaptableCostsEvaluatorWeb.Endpoint,
   pubsub_server: AdaptableCostsEvaluator.PubSub,
   live_view: [signing_salt: "4rHMT12z"]
 
+config :adaptable_costs_evaluator, AdaptableCostsEvaluator.Guardian,
+  issuer: "Adaptable Costs Evaluator",
+  secret_key: "EvlG5TLClHAO42bTKoeAKVE4H7A8TRCmKMuEQMmaNKg78/4z2ECEN5V5+4zVus+K"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

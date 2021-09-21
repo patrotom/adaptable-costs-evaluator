@@ -4,9 +4,9 @@ defmodule AdaptableCostsEvaluator.Users do
   """
 
   import Ecto.Query, warn: false
-  alias AdaptableCostsEvaluator.Repo
+  alias AdaptableCostsEvaluator.{Repo, Guardian}
 
-  alias AdaptableCostsEvaluator.Users.User
+  alias AdaptableCostsEvaluator.Users.{User, Credential}
 
   @doc """
   Returns the list of users.
@@ -52,6 +52,7 @@ defmodule AdaptableCostsEvaluator.Users do
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.changeset(attrs)
+    |> Ecto.Changeset.cast_assoc(:credential, with: &Credential.changeset/2)
     |> Repo.insert()
   end
 
@@ -102,8 +103,6 @@ defmodule AdaptableCostsEvaluator.Users do
     User.changeset(user, attrs)
   end
 
-  alias AdaptableCostsEvaluator.Users.Credential
-
   @doc """
   Returns the list of credentials.
 
@@ -131,7 +130,15 @@ defmodule AdaptableCostsEvaluator.Users do
       ** (Ecto.NoResultsError)
 
   """
+  def get_credential!(%User{} = user) do
+    Repo.preload(user, :credential).credential
+  end
+
   def get_credential!(id), do: Repo.get!(Credential, id)
+
+  def get_credential(email) when is_binary(email) do
+    Repo.get_by(Credential, email: email)
+  end
 
   @doc """
   Creates a credential.
@@ -200,5 +207,29 @@ defmodule AdaptableCostsEvaluator.Users do
 
   def hash_password(password) do
     Bcrypt.hash_pwd_salt(password)
+  end
+
+  def token_sign_in(email, password) do
+    case email_password_auth(email, password) do
+      {:ok, user} ->
+        Guardian.encode_and_sign(user)
+      _ ->
+        {:error, :unauthorized}
+    end
+  end
+
+  defp email_password_auth(email, password) when is_binary(email) and is_binary(password) do
+    case get_credential(email) do
+      nil -> {:error, :sign_in_error}
+      credential -> verify_password(password, credential)
+    end
+  end
+
+  defp verify_password(password, %Credential{} = credential) when is_binary(password) do
+    if Bcrypt.verify_pass(password, credential.password_hash) do
+      {:ok, Repo.preload(credential, :user).user}
+    else
+      {:error, :invalid_password}
+    end
   end
 end

@@ -23,6 +23,7 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
     pipe_through :api
 
     resources "/users", UserController
+    post "/sign_in", UserController, :sign_in
   end
 
   # Enables LiveDashboard only for development
