@@ -3,26 +3,12 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
 
   alias AdaptableCostsEvaluatorWeb.Pipelines.{JWTAuthPipeline}
 
-  pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-  end
-
   pipeline :jwt_authenticated do
     plug JWTAuthPipeline
   end
 
   pipeline :api do
     plug :accepts, ["json"]
-  end
-
-  scope "/", AdaptableCostsEvaluatorWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
   end
 
   scope "/api/v1", AdaptableCostsEvaluatorWeb do
@@ -49,7 +35,7 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
+      pipe_through [:fetch_session, :protect_from_forgery]
       live_dashboard "/dashboard", metrics: AdaptableCostsEvaluatorWeb.Telemetry
     end
   end
