@@ -69,9 +69,26 @@ defmodule AdaptableCostsEvaluator.Users do
 
   """
   def update_user(%User{} = user, attrs) do
-    user
-    |> User.changeset(attrs)
-    |> Repo.update()
+    credential_attrs = Map.get(attrs, "credential", %{})
+    user_attrs = Map.drop(attrs, ["credential"])
+    credential = try do
+      get_credential!(user)
+    rescue
+      RuntimeError -> {:error, user}
+    end
+
+    IO.inspect(user_attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:credential,
+                         Credential.changeset(credential, credential_attrs))
+    |> Ecto.Multi.update(:user,
+                         User.changeset(user, user_attrs))
+    |> Repo.transaction()
+    |> case do
+      {:ok, result} -> {:ok, result[:user]}
+      {:error, _, value, _} -> {:error, value}
+    end
   end
 
   @doc """

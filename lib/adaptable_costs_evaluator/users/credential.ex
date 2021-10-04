@@ -20,11 +20,21 @@ defmodule AdaptableCostsEvaluator.Users.Credential do
   def changeset(credential, attrs) do
     credential
     |> cast(attrs, [:email, :password])
-    |> validate_required([:email, :password])
+    |> validate_required([:email])
     |> validate_format(:email, ~r/^[^@]+@[^@]+$/)
-    |> validate_length(:password, min: 8)
     |> unique_constraint(:email)
-    |> put_password_hash
+    |> validate_password(attrs)
+    |> put_password_hash()
+  end
+
+  defp validate_password(changeset, attrs) do
+    if Map.has_key?(attrs, "password") || Map.has_key?(attrs, :password) do
+      changeset
+      |> validate_required([:password])
+      |> validate_length(:password, min: 8)
+    else
+      changeset
+    end
   end
 
   defp put_password_hash(changeset) do
