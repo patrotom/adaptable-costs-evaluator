@@ -1,7 +1,6 @@
 defmodule AdaptableCostsEvaluatorWeb.UserView do
   use AdaptableCostsEvaluatorWeb, :view
   alias AdaptableCostsEvaluatorWeb.UserView
-  alias AdaptableCostsEvaluator.Users
 
   def render("index.json", %{users: users}) do
     %{data: render_many(users, UserView, "user.json")}
@@ -16,7 +15,7 @@ defmodule AdaptableCostsEvaluatorWeb.UserView do
              first_name: user.first_name,
              middle_name: user.middle_name,
              last_name: user.last_name,
-             email: Users.get_credential!(user).email}
+             email: user.credential.email}
 
     if user.token != nil, do: Map.put(data, :token, user.token), else: data
   end

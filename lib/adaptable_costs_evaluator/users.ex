@@ -18,7 +18,7 @@ defmodule AdaptableCostsEvaluator.Users do
 
   """
   def list_users do
-    Repo.all(User)
+    Repo.all(from u in User, preload: [:credential])
   end
 
   @doc """
@@ -35,7 +35,17 @@ defmodule AdaptableCostsEvaluator.Users do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) do
+    Repo.get!(User, id)
+    |> Repo.preload(:credential)
+  end
+
+  def get_user_by_email!(email) do
+    Repo.get_by!(Credential, email: email)
+    |> Repo.preload(:user)
+    |> then(fn credential -> credential.user.id end)
+    |> get_user!()
+  end
 
   @doc """
   Creates a user.
@@ -69,24 +79,18 @@ defmodule AdaptableCostsEvaluator.Users do
 
   """
   def update_user(%User{} = user, attrs) do
-    credential_attrs = Map.get(attrs, "credential", %{})
-    user_attrs = Map.drop(attrs, ["credential"])
-    credential = try do
-      get_credential!(user)
-    rescue
-      RuntimeError -> {:error, user}
-    end
-
-    IO.inspect(user_attrs)
+    credential_attrs = Map.get(attrs, "credential",
+                               Map.get(attrs, :credential, %{}))
+    user_attrs = Map.drop(attrs, ["credential", :credential])
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:credential,
-                         Credential.changeset(credential, credential_attrs))
+                         Credential.changeset(user.credential, credential_attrs))
     |> Ecto.Multi.update(:user,
                          User.changeset(user, user_attrs))
     |> Repo.transaction()
     |> case do
-      {:ok, result} -> {:ok, result[:user]}
+      {:ok, result} -> {:ok, get_user!(result[:user].id)}
       {:error, _, value, _} -> {:error, value}
     end
   end
@@ -120,108 +124,6 @@ defmodule AdaptableCostsEvaluator.Users do
     User.changeset(user, attrs)
   end
 
-  @doc """
-  Returns the list of credentials.
-
-  ## Examples
-
-      iex> list_credentials()
-      [%Credential{}, ...]
-
-  """
-  def list_credentials do
-    Repo.all(Credential)
-  end
-
-  @doc """
-  Gets a single credential.
-
-  Raises `Ecto.NoResultsError` if the Credential does not exist.
-
-  ## Examples
-
-      iex> get_credential!(123)
-      %Credential{}
-
-      iex> get_credential!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_credential!(%User{} = user) do
-    Repo.preload(user, :credential).credential
-  end
-
-  def get_credential!(id), do: Repo.get!(Credential, id)
-
-  def get_credential(email) when is_binary(email) do
-    Repo.get_by(Credential, email: email)
-  end
-
-  @doc """
-  Creates a credential.
-
-  ## Examples
-
-      iex> create_credential(%{field: value})
-      {:ok, %Credential{}}
-
-      iex> create_credential(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_credential(attrs \\ %{}) do
-    %Credential{}
-    |> Credential.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a credential.
-
-  ## Examples
-
-      iex> update_credential(credential, %{field: new_value})
-      {:ok, %Credential{}}
-
-      iex> update_credential(credential, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_credential(%Credential{} = credential, attrs) do
-    credential
-    |> Credential.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a credential.
-
-  ## Examples
-
-      iex> delete_credential(credential)
-      {:ok, %Credential{}}
-
-      iex> delete_credential(credential)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_credential(%Credential{} = credential) do
-    Repo.delete(credential)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking credential changes.
-
-  ## Examples
-
-      iex> change_credential(credential)
-      %Ecto.Changeset{data: %Credential{}}
-
-  """
-  def change_credential(%Credential{} = credential, attrs \\ %{}) do
-    Credential.changeset(credential, attrs)
-  end
-
   def hash_password(password) do
     Bcrypt.hash_pwd_salt(password)
   end
@@ -236,10 +138,13 @@ defmodule AdaptableCostsEvaluator.Users do
   end
 
   defp email_password_auth(email, password) when is_binary(email) and is_binary(password) do
-    case get_credential(email) do
-      nil -> {:error, :sign_in_error}
-      credential -> verify_password(password, credential)
+    credential = try do
+      get_user_by_email!(email).credential
+    rescue
+      Ecto.NoResultsError -> nil
     end
+
+    if credential == nil, do: {:error, :sign_in_error}, else: verify_password(password, credential)
   end
 
   defp verify_password(password, %Credential{} = credential) when is_binary(password) do
