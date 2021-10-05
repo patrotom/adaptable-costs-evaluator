@@ -1,28 +1,28 @@
 defmodule AdaptableCostsEvaluatorWeb.Router do
   use AdaptableCostsEvaluatorWeb, :router
 
-  pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+  alias AdaptableCostsEvaluatorWeb.Pipelines.{JWTAuthPipeline}
+
+  pipeline :jwt_authenticated do
+    plug JWTAuthPipeline
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/", AdaptableCostsEvaluatorWeb do
-    pipe_through :browser
+  scope "/api/v1", AdaptableCostsEvaluatorWeb do
+    pipe_through :api
 
-    get "/", PageController, :index
+    resources "/users", UserController, only: [:create]
+    post "/sign_in", UserController, :sign_in
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", AdaptableCostsEvaluatorWeb do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", AdaptableCostsEvaluatorWeb do
+    pipe_through [:api, :jwt_authenticated]
+
+    resources "/users", UserController, except: [:create]
+  end
 
   # Enables LiveDashboard only for development
   #
@@ -35,7 +35,7 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
+      pipe_through [:fetch_session, :protect_from_forgery]
       live_dashboard "/dashboard", metrics: AdaptableCostsEvaluatorWeb.Telemetry
     end
   end
