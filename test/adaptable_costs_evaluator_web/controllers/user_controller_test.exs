@@ -27,7 +27,7 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
   end
 
   describe "create user" do
-    test "renders user when data is valid", %{conns: conns, user: _user} do
+    test "renders user and token when data is valid", %{conns: conns, user: _user} do
       attrs =
         Map.replace!(@valid_attrs, :credential, %{
           @valid_attrs[:credential]
@@ -35,7 +35,8 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
         })
 
       conn = post(conns[:plain], Routes.user_path(conns[:plain], :create), user: attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"id" => id, "token" => token} = json_response(conn, 201)["data"]
+      assert {:ok, _claims} = Guardian.decode_and_verify(token)
 
       conn = get(conns[:authd], Routes.user_path(conns[:authd], :show, id))
       user = Users.get_user!(id)
@@ -78,6 +79,34 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
       assert_error_sent 404, fn ->
         get(conn, Routes.user_path(conn, :show, user))
       end
+    end
+  end
+
+  describe "sign in user" do
+    test "renders token when credentials are valid", %{conns: conns, user: user} do
+      body = %{
+        data: %{
+          email: user.credential.email,
+          password: @valid_attrs[:credential][:password]
+        }
+      }
+
+      conn = post(conns[:plain], Routes.user_path(conns[:plain], :sign_in), body)
+
+      assert %{"token" => _token} = json_response(conn, 200)["data"]
+    end
+
+    test "renders unauthorized error when credentials are invalid", %{conns: conns, user: _user} do
+      body = %{
+        data: %{
+          email: "random@email.com",
+          password: "randompassword"
+        }
+      }
+
+      conn = post(conns[:plain], Routes.user_path(conns[:plain], :sign_in), body)
+
+      assert json_response(conn, 401)["errors"] == ["authorization failed"]
     end
   end
 end
