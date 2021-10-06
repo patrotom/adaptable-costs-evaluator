@@ -1,4 +1,4 @@
-defmodule AdaptableCostsEvaluator.UserFixture do
+defmodule AdaptableCostsEvaluator.Fixtures.UserFixture do
   use ExUnit.CaseTemplate
 
   alias AdaptableCostsEvaluator.Users
@@ -6,7 +6,7 @@ defmodule AdaptableCostsEvaluator.UserFixture do
 
   using do
     quote do
-      @valid_attrs %{
+      @valid_user_attrs %{
         first_name: "some first_name",
         last_name: "some last_name",
         middle_name: "some middle_name",
@@ -15,7 +15,7 @@ defmodule AdaptableCostsEvaluator.UserFixture do
           password: "12345678"
         }
       }
-      @update_attrs %{
+      @update_user_attrs %{
         first_name: "some updated first_name",
         last_name: "some updated last_name",
         middle_name: "some updated middle_name",
@@ -24,7 +24,7 @@ defmodule AdaptableCostsEvaluator.UserFixture do
           password: "87654321"
         }
       }
-      @invalid_attrs %{
+      @invalid_user_attrs %{
         first_name: nil,
         last_name: nil,
         middle_name: nil,
@@ -37,7 +37,7 @@ defmodule AdaptableCostsEvaluator.UserFixture do
       def user_fixture(attrs \\ %{}) do
         {:ok, user} =
           attrs
-          |> Enum.into(@valid_attrs)
+          |> Enum.into(@valid_user_attrs)
           |> Users.create_user()
 
         Map.replace(user, :credential, %{user.credential | password: nil})

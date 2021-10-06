@@ -21,7 +21,8 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
   scope "/api/v1", AdaptableCostsEvaluatorWeb do
     pipe_through [:api, :jwt_authenticated]
 
-    resources "/users", UserController, except: [:create]
+    resources "/users", UserController, except: [:create, :new, :edit]
+    resources "/organizations", OrganizationController, except: [:new, :edit]
   end
 
   # Enables LiveDashboard only for development
