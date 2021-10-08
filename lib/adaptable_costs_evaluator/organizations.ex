@@ -6,7 +6,7 @@ defmodule AdaptableCostsEvaluator.Organizations do
   import Ecto.Query, warn: false
   alias AdaptableCostsEvaluator.Repo
 
-  alias AdaptableCostsEvaluator.Organizations.Organization
+  alias AdaptableCostsEvaluator.Organizations.{Organization, Membership}
 
   @doc """
   Returns the list of organizations.
@@ -100,5 +100,24 @@ defmodule AdaptableCostsEvaluator.Organizations do
   """
   def change_organization(%Organization{} = organization, attrs \\ %{}) do
     Organization.changeset(organization, attrs)
+  end
+
+  def list_users(organization_id) do
+    organization = Repo.get!(Organization, organization_id)
+    Repo.preload(organization, users: [:credential]).users
+  end
+
+  def create_membership(organization_id, user_id) do
+    attrs = %{organization_id: organization_id, user_id: user_id}
+
+    %Membership{}
+    |> Membership.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def delete_membership(organization_id, user_id) do
+    membership = Repo.get_by!(Membership, organization_id: organization_id,
+                                          user_id: user_id)
+    Repo.delete(membership)
   end
 end

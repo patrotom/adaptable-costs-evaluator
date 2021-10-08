@@ -2,9 +2,15 @@ defmodule AdaptableCostsEvaluator.Organizations.Organization do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias AdaptableCostsEvaluator.Organizations.Membership
+  alias AdaptableCostsEvaluator.Users.User
+
   schema "organizations" do
     field :name, :string
     field :username, :string
+
+    has_many :memberships, Membership
+    many_to_many :users, User, join_through: "memberships"
 
     timestamps()
   end
