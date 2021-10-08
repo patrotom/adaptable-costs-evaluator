@@ -1,86 +1,47 @@
 defmodule AdaptableCostsEvaluatorWeb.MembershipControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
+  use AdaptableCostsEvaluator.Fixtures.{UserFixture,
+                                        OrganizationFixture,
+                                        MembershipFixture}
 
   alias AdaptableCostsEvaluator.Organizations
-  alias AdaptableCostsEvaluator.Organizations.Membership
 
-  @create_attrs %{
-
-  }
-  @update_attrs %{
-
-  }
-  @invalid_attrs %{}
-
-  def fixture(:membership) do
-    {:ok, membership} = Organizations.create_membership(@create_attrs)
-    membership
-  end
+  import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_authd_conn: 2]
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    user = user_fixture()
+    organization = organization_fixture()
+    {:ok, conn: conn} = setup_authd_conn(user, conn)
+    %{conn: conn, user: user, organization: organization}
   end
 
   describe "index" do
-    test "lists all memberships", %{conn: conn} do
-      conn = get(conn, Routes.membership_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+    test "lists all users in organization", %{conn: conn, user: user, organization: organization} do
+      membership_fixture(organization.id, user.id)
+
+      conn = get(conn, Routes.membership_path(conn, :index, organization.id))
+      assert json_response(conn, 200)["data"] == [user_response(user)]
     end
   end
 
   describe "create membership" do
-    test "renders membership when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.membership_path(conn, :create), membership: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+    test "adds user to organization when data is valid", %{conn: conn, user: user, organization: organization} do
+      conn = post(conn, Routes.membership_path(conn, :create, organization.id, user.id))
+      assert response(conn, 201)
 
-      conn = get(conn, Routes.membership_path(conn, :show, id))
-
-      assert %{
-               "id" => id
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.membership_path(conn, :create), membership: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
-    end
-  end
-
-  describe "update membership" do
-    setup [:create_membership]
-
-    test "renders membership when data is valid", %{conn: conn, membership: %Membership{id: id} = membership} do
-      conn = put(conn, Routes.membership_path(conn, :update, membership), membership: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-      conn = get(conn, Routes.membership_path(conn, :show, id))
-
-      assert %{
-               "id" => id
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, membership: membership} do
-      conn = put(conn, Routes.membership_path(conn, :update, membership), membership: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+      conn = get(conn, Routes.membership_path(conn, :index, organization.id))
+      assert json_response(conn, 200)["data"] == [user_response(user)]
     end
   end
 
   describe "delete membership" do
-    setup [:create_membership]
+    test "deletes user from organization", %{conn: conn, user: user, organization: organization} do
+      membership_fixture(organization.id, user.id)
 
-    test "deletes chosen membership", %{conn: conn, membership: membership} do
-      conn = delete(conn, Routes.membership_path(conn, :delete, membership))
+      conn = delete(conn, Routes.membership_path(conn, :delete, organization.id, user.id))
       assert response(conn, 204)
 
-      assert_error_sent 404, fn ->
-        get(conn, Routes.membership_path(conn, :show, membership))
-      end
+      assert Organizations.list_users(organization.id) == []
     end
-  end
-
-  defp create_membership(_) do
-    membership = fixture(:membership)
-    %{membership: membership}
   end
 end

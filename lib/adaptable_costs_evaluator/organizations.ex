@@ -6,6 +6,7 @@ defmodule AdaptableCostsEvaluator.Organizations do
   import Ecto.Query, warn: false
   alias AdaptableCostsEvaluator.Repo
 
+  alias AdaptableCostsEvaluator.Users
   alias AdaptableCostsEvaluator.Organizations.{Organization, Membership}
 
   @doc """
@@ -108,7 +109,10 @@ defmodule AdaptableCostsEvaluator.Organizations do
   end
 
   def create_membership(organization_id, user_id) do
-    attrs = %{organization_id: organization_id, user_id: user_id}
+    organization = get_organization!(organization_id)
+    user = Users.get_user!(user_id)
+
+    attrs = %{organization_id: organization.id, user_id: user.id}
 
     %Membership{}
     |> Membership.changeset(attrs)
