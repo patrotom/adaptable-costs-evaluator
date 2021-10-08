@@ -1,5 +1,6 @@
 defmodule AdaptableCostsEvaluator.UsersTest do
-  use AdaptableCostsEvaluator.{DataCase, UserFixture}
+  use AdaptableCostsEvaluator.DataCase
+  use AdaptableCostsEvaluator.Fixtures.UserFixture
 
   alias AdaptableCostsEvaluator.{Repo, Users}
 
@@ -23,7 +24,7 @@ defmodule AdaptableCostsEvaluator.UsersTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} = Users.create_user(@valid_attrs)
+      assert {:ok, %User{} = user} = Users.create_user(@valid_user_attrs)
       assert user.first_name == "some first_name"
       assert user.last_name == "some last_name"
       assert user.middle_name == "some middle_name"
@@ -32,12 +33,12 @@ defmodule AdaptableCostsEvaluator.UsersTest do
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Users.create_user(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Users.create_user(@invalid_user_attrs)
     end
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      assert {:ok, %User{} = user} = Users.update_user(user, @update_attrs)
+      assert {:ok, %User{} = user} = Users.update_user(user, @update_user_attrs)
       assert user.first_name == "some updated first_name"
       assert user.last_name == "some updated last_name"
       assert user.middle_name == "some updated middle_name"
@@ -47,7 +48,7 @@ defmodule AdaptableCostsEvaluator.UsersTest do
 
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Users.update_user(user, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Users.update_user(user, @invalid_user_attrs)
       assert user == Users.get_user!(user.id)
     end
 

@@ -3,6 +3,7 @@ defmodule AdaptableCostsEvaluator.Users.User do
   import Ecto.Changeset
 
   alias AdaptableCostsEvaluator.Users.Credential
+  alias AdaptableCostsEvaluator.Organizations.{Organization, Membership}
 
   schema "users" do
     field :first_name, :string
@@ -11,6 +12,8 @@ defmodule AdaptableCostsEvaluator.Users.User do
     field :token, :string, virtual: true
 
     has_one :credential, Credential
+    has_many :memberships, Membership
+    many_to_many :organizations, Organization, join_through: "memberships"
 
     timestamps()
   end
