@@ -6,6 +6,7 @@ defmodule AdaptableCostsEvaluator.Users do
   import Ecto.Query, warn: false
   alias AdaptableCostsEvaluator.{Repo, Guardian}
 
+  alias AdaptableCostsEvaluator.Organizations
   alias AdaptableCostsEvaluator.Users.{User, Credential}
 
   @doc """
@@ -122,6 +123,20 @@ defmodule AdaptableCostsEvaluator.Users do
   """
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
+  end
+
+  def list_organizations(user_id) do
+    user = get_user!(user_id)
+    Repo.preload(user, :organizations).organizations
+  end
+
+  def has_role?(role_type, user_id, organization_id) do
+    user = get_user!(user_id)
+    organization = Organizations.get_organization!(organization_id)
+
+    Organizations.list_roles(organization.id, user.id)
+    |> Enum.map(fn r -> r.type end)
+    |> Enum.member?(role_type)
   end
 
   def hash_password(password) do

@@ -9,6 +9,7 @@ defmodule AdaptableCostsEvaluator.Users.User do
     field :first_name, :string
     field :last_name, :string
     field :middle_name, :string
+    field :admin, :boolean
     field :token, :string, virtual: true
 
     has_one :credential, Credential

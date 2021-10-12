@@ -7,7 +7,8 @@ defmodule AdaptableCostsEvaluator.Organizations do
   alias AdaptableCostsEvaluator.Repo
 
   alias AdaptableCostsEvaluator.Users
-  alias AdaptableCostsEvaluator.Organizations.{Organization, Membership}
+  alias AdaptableCostsEvaluator.Users.User
+  alias AdaptableCostsEvaluator.Organizations.{Organization, Membership, Role}
 
   @doc """
   Returns the list of organizations.
@@ -108,6 +109,11 @@ defmodule AdaptableCostsEvaluator.Organizations do
     Repo.preload(organization, users: [:credential]).users
   end
 
+  def get_membership!(organization_id, user_id) do
+    Repo.get_by!(Membership, organization_id: organization_id,
+                             user_id: user_id)
+  end
+
   def create_membership(organization_id, user_id) do
     organization = get_organization!(organization_id)
     user = Users.get_user!(user_id)
@@ -123,5 +129,49 @@ defmodule AdaptableCostsEvaluator.Organizations do
     membership = Repo.get_by!(Membership, organization_id: organization_id,
                                           user_id: user_id)
     Repo.delete(membership)
+  end
+
+  def colleagues?(%User{} = first_user, %User{} = second_user) do
+    first_user_organizations = Users.list_organizations(first_user.id)
+    second_user_organizations = Users.list_organizations(second_user.id)
+
+    if first_user_organizations == [] || second_user_organizations == [] do
+      false
+    else
+      len_before = length(first_user_organizations)
+      diff = first_user_organizations -- second_user_organizations
+
+      len_before != length(diff)
+    end
+  end
+
+  def list_roles(organization_id, user_id) do
+    membership = Repo.get_by!(Membership, organization_id: organization_id,
+                                          user_id: user_id)
+
+    Repo.preload(membership, :roles).roles
+  end
+
+  def create_role(organization_id, user_id, attrs) do
+    membership = get_membership!(organization_id, user_id)
+    attrs = Map.merge(attrs, %{"membership_id" => membership.id})
+
+    %Role{}
+    |> Role.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def delete_role(role_type, organization_id, user_id) do
+    membership =
+      get_membership!(organization_id, user_id)
+      |> Repo.preload([roles: from(r in Role, where: r.type == ^role_type)])
+
+    role = List.first(membership.roles)
+
+    if role == nil do
+      {:error, :not_found}
+    else
+      Repo.delete(role)
+    end
   end
 end

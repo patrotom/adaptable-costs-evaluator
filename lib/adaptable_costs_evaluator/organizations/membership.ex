@@ -2,12 +2,14 @@ defmodule AdaptableCostsEvaluator.Organizations.Membership do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias AdaptableCostsEvaluator.Organizations.Organization
+  alias AdaptableCostsEvaluator.Organizations.{Organization, Role}
   alias AdaptableCostsEvaluator.Users.User
 
   schema "memberships" do
     belongs_to :organization, Organization
     belongs_to :user, User
+
+    has_many :roles, Role
 
     timestamps()
   end
