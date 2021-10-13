@@ -21,7 +21,7 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicy do
       }) do
     user.id == user_id ||
       (executive?(user.id, organization_id) &&
-         !(Users.has_role?(:owner, user.id, organization_id) ||
-             Users.has_role?(:maintainer, user.id, organization_id)))
+         !(Users.has_role?(:owner, user_id, organization_id) ||
+             Users.has_role?(:maintainer, user_id, organization_id)))
   end
 end
