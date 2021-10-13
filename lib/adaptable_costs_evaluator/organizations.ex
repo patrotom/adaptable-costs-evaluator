@@ -118,10 +118,15 @@ defmodule AdaptableCostsEvaluator.Organizations do
     organization = get_organization!(organization_id)
     user = Users.get_user!(user_id)
 
-    attrs = %{organization_id: organization.id, user_id: user.id}
+    attrs = %{
+      organization_id: organization.id,
+      user_id: user.id,
+      roles: [%{type: :regular}]
+    }
 
     %Membership{}
     |> Membership.changeset(attrs)
+    |> Ecto.Changeset.cast_assoc(:roles, with: &Role.changeset/2)
     |> Repo.insert()
   end
 
@@ -146,10 +151,14 @@ defmodule AdaptableCostsEvaluator.Organizations do
   end
 
   def list_roles(organization_id, user_id) do
-    membership = Repo.get_by!(Membership, organization_id: organization_id,
-                                          user_id: user_id)
+    membership = Repo.get_by(Membership, organization_id: organization_id,
+                                         user_id: user_id)
 
-    Repo.preload(membership, :roles).roles
+    if membership == nil do
+      []
+    else
+      Repo.preload(membership, :roles).roles
+    end
   end
 
   def create_role(organization_id, user_id, attrs) do

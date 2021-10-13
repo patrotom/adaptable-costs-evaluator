@@ -16,7 +16,7 @@ defmodule AdaptableCostsEvaluator.Organizations.Role do
   def changeset(role, attrs) do
     role
     |> cast(attrs, [:type, :membership_id])
-    |> validate_required([:type, :membership_id])
+    |> validate_required([:type])
     |> unique_constraint([:type, :membership_id])
   end
 end
