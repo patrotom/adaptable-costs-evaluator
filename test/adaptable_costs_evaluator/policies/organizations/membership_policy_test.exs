@@ -1,4 +1,4 @@
-defmodule AdaptableCostsEvaluator.Policies.Organizations.OrganizationPolicyTest do
+defmodule AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicyTest do
   use AdaptableCostsEvaluator.DataCase
   use AdaptableCostsEvaluator.Fixtures.{OrganizationFixture, UserFixture}
 

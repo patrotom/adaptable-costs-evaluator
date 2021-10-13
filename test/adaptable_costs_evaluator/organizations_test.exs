@@ -1,8 +1,12 @@
 defmodule AdaptableCostsEvaluator.OrganizationsTest do
   use AdaptableCostsEvaluator.DataCase
-  use AdaptableCostsEvaluator.Fixtures.{UserFixture,
-                                        OrganizationFixture,
-                                        MembershipFixture}
+
+  use AdaptableCostsEvaluator.Fixtures.{
+    UserFixture,
+    OrganizationFixture,
+    MembershipFixture,
+    RoleFixture
+  }
 
   alias AdaptableCostsEvaluator.{Organizations, Users}
   alias AdaptableCostsEvaluator.Organizations.Role
@@ -21,25 +25,34 @@ defmodule AdaptableCostsEvaluator.OrganizationsTest do
     end
 
     test "create_organization/1 with valid data creates a organization" do
-      assert {:ok, %Organization{} = organization} = Organizations.create_organization(@valid_organization_attrs)
+      assert {:ok, %Organization{} = organization} =
+               Organizations.create_organization(@valid_organization_attrs)
+
       assert organization.name == "some name"
       assert organization.username == "some_username"
     end
 
     test "create_organization/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Organizations.create_organization(@invalid_organization_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Organizations.create_organization(@invalid_organization_attrs)
     end
 
     test "update_organization/2 with valid data updates the organization" do
       organization = organization_fixture()
-      assert {:ok, %Organization{} = organization} = Organizations.update_organization(organization, @update_organization_attrs)
+
+      assert {:ok, %Organization{} = organization} =
+               Organizations.update_organization(organization, @update_organization_attrs)
+
       assert organization.name == "some updated name"
       assert organization.username == "some_updated_username"
     end
 
     test "update_organization/2 with invalid data returns error changeset" do
       organization = organization_fixture()
-      assert {:error, %Ecto.Changeset{}} = Organizations.update_organization(organization, @invalid_organization_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Organizations.update_organization(organization, @invalid_organization_attrs)
+
       assert organization == Organizations.get_organization!(organization.id)
     end
 
@@ -62,13 +75,21 @@ defmodule AdaptableCostsEvaluator.OrganizationsTest do
       %{user: user_fixture(), organization: organization_fixture()}
     end
 
-    test "list_users/0 returns all users in organization", %{user: user, organization: organization} do
+    test "list_users/0 returns all users in organization", %{
+      user: user,
+      organization: organization
+    } do
       membership_fixture(organization.id, user.id)
       assert Organizations.list_users(organization.id) == [Users.get_user!(user.id)]
     end
 
-    test "create_membership/1 with valid data creates a membership", %{user: user, organization: organization} do
-      assert {:ok, %Membership{} = membership} = Organizations.create_membership(organization.id, user.id)
+    test "create_membership/1 with valid data creates a membership", %{
+      user: user,
+      organization: organization
+    } do
+      assert {:ok, %Membership{} = membership} =
+               Organizations.create_membership(organization.id, user.id)
+
       assert [%Role{type: :regular}] = membership.roles
     end
 
@@ -81,64 +102,53 @@ defmodule AdaptableCostsEvaluator.OrganizationsTest do
       assert {:ok, %Membership{}} = Organizations.delete_membership(organization.id, user.id)
       assert Organizations.list_users(organization.id) == []
     end
+
+    test "colleagues?/2 checks whether two users are in the same organization", %{
+      user: first,
+      organization: organization
+    } do
+      {:ok, second} = Users.create_user(@update_user_attrs)
+      Organizations.create_membership(organization.id, first.id)
+      Organizations.create_membership(organization.id, second.id)
+
+      assert Organizations.colleagues?(first, second)
+    end
   end
 
-  # describe "roles" do
-  #   alias AdaptableCostsEvaluator.Organizations.Role
+  describe "roles" do
+    setup do
+      user = user_fixture()
+      organization = organization_fixture()
+      Organizations.create_membership(organization.id, user.id)
 
-  #   @valid_attrs %{type: "some type"}
-  #   @update_attrs %{type: "some updated type"}
-  #   @invalid_attrs %{type: nil}
+      user = Repo.preload(user, memberships: [:roles])
 
-  #   def role_fixture(attrs \\ %{}) do
-  #     {:ok, role} =
-  #       attrs
-  #       |> Enum.into(@valid_attrs)
-  #       |> Organizations.create_role()
+      %{user: user, organization: organization}
+    end
 
-  #     role
-  #   end
+    test "list_roles/2 returns all roles of the user in the organization", %{
+      user: user,
+      organization: organization
+    } do
+      role = user.memberships |> List.first() |> then(fn m -> m.roles end) |> List.first()
 
-  #   test "list_roles/0 returns all roles" do
-  #     role = role_fixture()
-  #     assert Organizations.list_roles() == [role]
-  #   end
+      assert Organizations.list_roles(organization.id, user.id) == [role]
+    end
 
-  #   test "get_role!/1 returns the role with given id" do
-  #     role = role_fixture()
-  #     assert Organizations.get_role!(role.id) == role
-  #   end
+    test "create_role/2 creates a new role within the organization", %{
+      user: user,
+      organization: organization
+    } do
+      assert {:ok, %Role{type: :maintainer}} =
+               Organizations.create_role(organization.id, user.id, %{"type" => "maintainer"})
+    end
 
-  #   test "create_role/1 with valid data creates a role" do
-  #     assert {:ok, %Role{} = role} = Organizations.create_role(@valid_attrs)
-  #     assert role.type == "some type"
-  #   end
-
-  #   test "create_role/1 with invalid data returns error changeset" do
-  #     assert {:error, %Ecto.Changeset{}} = Organizations.create_role(@invalid_attrs)
-  #   end
-
-  #   test "update_role/2 with valid data updates the role" do
-  #     role = role_fixture()
-  #     assert {:ok, %Role{} = role} = Organizations.update_role(role, @update_attrs)
-  #     assert role.type == "some updated type"
-  #   end
-
-  #   test "update_role/2 with invalid data returns error changeset" do
-  #     role = role_fixture()
-  #     assert {:error, %Ecto.Changeset{}} = Organizations.update_role(role, @invalid_attrs)
-  #     assert role == Organizations.get_role!(role.id)
-  #   end
-
-  #   test "delete_role/1 deletes the role" do
-  #     role = role_fixture()
-  #     assert {:ok, %Role{}} = Organizations.delete_role(role)
-  #     assert_raise Ecto.NoResultsError, fn -> Organizations.get_role!(role.id) end
-  #   end
-
-  #   test "change_role/1 returns a role changeset" do
-  #     role = role_fixture()
-  #     assert %Ecto.Changeset{} = Organizations.change_role(role)
-  #   end
-  # end
+    test "delete_role/3 deletes the role of the user within the organization", %{
+      user: user,
+      organization: organization
+    } do
+      assert {:ok, %Role{}} = Organizations.delete_role(:regular, organization.id, user.id)
+      assert Organizations.list_roles(organization.id, user.id) == []
+    end
+  end
 end

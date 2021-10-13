@@ -98,7 +98,7 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
 
       conn = post(conns[:plain], Routes.user_path(conns[:plain], :sign_in), body)
 
-      assert json_response(conn, 401)["errors"] == ["authorization failed"]
+      assert json_response(conn, 401)["errors"] == ["unauthorized"]
     end
   end
 end
