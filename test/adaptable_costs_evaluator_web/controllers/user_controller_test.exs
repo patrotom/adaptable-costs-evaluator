@@ -7,7 +7,7 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
   import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_conns: 2]
 
   setup %{conn: conn} do
-    user_fixture()
+    user_fixture(admin: true)
     |> setup_conns(conn)
   end
 
@@ -98,7 +98,7 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
 
       conn = post(conns[:plain], Routes.user_path(conns[:plain], :sign_in), body)
 
-      assert json_response(conn, 401)["errors"] == ["authorization failed"]
+      assert json_response(conn, 401)["errors"] == ["unauthorized"]
     end
   end
 end

@@ -9,6 +9,7 @@ defmodule AdaptableCostsEvaluator.Users.User do
     field :first_name, :string
     field :last_name, :string
     field :middle_name, :string
+    field :admin, :boolean
     field :token, :string, virtual: true
 
     has_one :credential, Credential
@@ -21,7 +22,7 @@ defmodule AdaptableCostsEvaluator.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:first_name, :middle_name, :last_name])
+    |> cast(attrs, [:first_name, :middle_name, :last_name, :admin])
     |> validate_required([:first_name, :last_name])
     |> validate_length(:first_name, min: 1)
     |> validate_length(:first_name, max: 50)
@@ -29,4 +30,6 @@ defmodule AdaptableCostsEvaluator.Users.User do
     |> validate_length(:last_name, min: 1)
     |> validate_length(:last_name, max: 50)
   end
+
+  defdelegate authorize(action, user, params), to: AdaptableCostsEvaluator.Policies.Users.UserPolicy
 end

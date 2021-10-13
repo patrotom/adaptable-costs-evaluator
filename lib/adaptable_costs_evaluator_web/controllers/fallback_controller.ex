@@ -28,4 +28,11 @@ defmodule AdaptableCostsEvaluatorWeb.FallbackController do
     |> put_view(AdaptableCostsEvaluatorWeb.ErrorView)
     |> render("401.json")
   end
+
+  def call(conn, {:error, :forbidden}) do
+    conn
+    |> put_status(:forbidden)
+    |> put_view(AdaptableCostsEvaluatorWeb.ErrorView)
+    |> render("403.json")
+  end
 end

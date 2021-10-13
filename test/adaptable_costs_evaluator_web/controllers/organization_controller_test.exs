@@ -8,7 +8,7 @@ defmodule AdaptableCostsEvaluatorWeb.OrganizationControllerTest do
   import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_authd_conn: 2]
 
   setup %{conn: conn} do
-    user_fixture()
+    user_fixture(admin: true)
     |> setup_authd_conn(conn)
   end
 

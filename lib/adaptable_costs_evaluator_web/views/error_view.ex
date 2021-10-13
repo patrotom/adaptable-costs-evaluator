@@ -15,7 +15,11 @@ defmodule AdaptableCostsEvaluatorWeb.ErrorView do
   end
 
   def render("401.json", assigns) do
-    errors = Map.get(assigns, :errors, ["authorization failed"])
+    errors = Map.get(assigns, :errors, ["unauthorized"])
     %{errors: errors}
+  end
+
+  def render("403.json", _assigns) do
+    %{errors: ["forbidden"]}
   end
 end

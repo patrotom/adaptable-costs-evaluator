@@ -9,7 +9,7 @@ defmodule AdaptableCostsEvaluatorWeb.MembershipControllerTest do
   import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_authd_conn: 2]
 
   setup %{conn: conn} do
-    user = user_fixture()
+    user = user_fixture(admin: true)
     organization = organization_fixture()
     {:ok, conn: conn} = setup_authd_conn(user, conn)
     %{conn: conn, user: user, organization: organization}
