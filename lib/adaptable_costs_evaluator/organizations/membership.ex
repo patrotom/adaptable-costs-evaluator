@@ -21,4 +21,6 @@ defmodule AdaptableCostsEvaluator.Organizations.Membership do
     |> validate_required([:user_id, :organization_id])
     |> unique_constraint([:user_id, :organization_id])
   end
+
+  defdelegate authorize(action, user, params), to: AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicy
 end

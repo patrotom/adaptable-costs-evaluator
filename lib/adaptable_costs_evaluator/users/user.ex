@@ -29,5 +29,19 @@ defmodule AdaptableCostsEvaluator.Users.User do
     |> validate_length(:middle_name, max: 50)
     |> validate_length(:last_name, min: 1)
     |> validate_length(:last_name, max: 50)
+    |> put_admin()
   end
+
+  defp put_admin(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{admin: _admin}}
+        ->
+          changeset
+      _
+        ->
+          put_change(changeset, :admin, false)
+    end
+  end
+
+  defdelegate authorize(action, user, params), to: AdaptableCostsEvaluator.Policies.Users.UserPolicy
 end

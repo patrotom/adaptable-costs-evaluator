@@ -23,4 +23,6 @@ defmodule AdaptableCostsEvaluator.Organizations.Organization do
     |> unique_constraint(:username)
     |> validate_format(:username, ~r/^[a-zA-Z0-9\.\_\-]+$/)
   end
+
+  defdelegate authorize(action, user, params), to: AdaptableCostsEvaluator.Policies.Organizations.OrganizationPolicy
 end

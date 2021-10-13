@@ -22,6 +22,13 @@ defmodule AdaptableCostsEvaluatorWeb.FallbackController do
     |> render(:"404")
   end
 
+  def call(conn, {:error, :unauthorized}) do
+    conn
+    |> put_status(:unauthorized)
+    |> put_view(AdaptableCostsEvaluatorWeb.ErrorView)
+    |> render("401.json")
+  end
+
   def call(conn, {:error, :forbidden}) do
     conn
     |> put_status(:forbidden)

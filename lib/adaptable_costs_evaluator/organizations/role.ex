@@ -19,4 +19,6 @@ defmodule AdaptableCostsEvaluator.Organizations.Role do
     |> validate_required([:type])
     |> unique_constraint([:type, :membership_id])
   end
+
+  defdelegate authorize(action, user, params), to: AdaptableCostsEvaluator.Policies.Organizations.RolePolicy
 end
