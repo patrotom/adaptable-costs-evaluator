@@ -4,14 +4,14 @@ defmodule AdaptableCostsEvaluatorWeb.MembershipController do
   import AdaptableCostsEvaluatorWeb.Helpers.AuthHelper, only: [current_user: 1]
 
   alias AdaptableCostsEvaluator.Organizations
-  alias AdaptableCostsEvaluator.Organizations.{Organization, Membership}
+  alias AdaptableCostsEvaluator.Organizations.Membership
 
   action_fallback AdaptableCostsEvaluatorWeb.FallbackController
 
   plug :put_view, AdaptableCostsEvaluatorWeb.UserView
 
   def index(conn, %{"organization_id" => organization_id}) do
-    with :ok <- Bodyguard.permit(Organization, :list_users, current_user(conn), organization_id) do
+    with :ok <- Bodyguard.permit(Membership, :list, current_user(conn), organization_id) do
       users = Organizations.list_users(organization_id)
       render(conn, "index.json", users: users)
     end

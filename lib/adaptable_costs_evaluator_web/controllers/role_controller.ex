@@ -4,7 +4,7 @@ defmodule AdaptableCostsEvaluatorWeb.RoleController do
   import AdaptableCostsEvaluatorWeb.Helpers.AuthHelper, only: [current_user: 1]
 
   alias AdaptableCostsEvaluator.Organizations
-  alias AdaptableCostsEvaluator.Organizations.{Role, Organization}
+  alias AdaptableCostsEvaluator.Organizations.Role
 
   action_fallback AdaptableCostsEvaluatorWeb.FallbackController
 
@@ -20,7 +20,9 @@ defmodule AdaptableCostsEvaluatorWeb.RoleController do
         "user_id" => user_id,
         "organization_id" => organization_id
       }) do
-    with :ok <- Bodyguard.permit(Organization, :create, current_user(conn)),
+    params = Map.merge(role_params, %{"organization_id" => organization_id})
+
+    with :ok <- Bodyguard.permit(Role, :create, current_user(conn), params),
          {:ok, %Role{}} <- Organizations.create_role(organization_id, user_id, role_params) do
       conn
       |> send_resp(:created, "")
@@ -32,7 +34,9 @@ defmodule AdaptableCostsEvaluatorWeb.RoleController do
         "user_id" => user_id,
         "organization_id" => organization_id
       }) do
-    with :ok <- Bodyguard.permit(Organization, :delete, current_user(conn)),
+    params = %{"type" => role_type, "organization_id" => organization_id}
+
+    with :ok <- Bodyguard.permit(Role, :delete, current_user(conn), params),
          {:ok, %Role{}} <- Organizations.delete_role(role_type, organization_id, user_id) do
       send_resp(conn, :no_content, "")
     end

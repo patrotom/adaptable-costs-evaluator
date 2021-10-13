@@ -1,6 +1,7 @@
 defmodule AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicy do
   use AdaptableCostsEvaluator.Policies.BasePolicy
 
+  alias AdaptableCostsEvaluator.Users
   alias AdaptableCostsEvaluator.Users.User
 
   @behaviour Bodyguard.Policy
@@ -9,10 +10,18 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicy do
     executive?(user.id, organization_id)
   end
 
-  def authorize(_action, %User{} = user, %{
+  def authorize(:list, %User{} = user, organization_id) do
+    Users.has_role?(:regular, user.id, organization_id) ||
+      executive?(user.id, organization_id)
+  end
+
+  def authorize(:delete, %User{} = user, %{
         "user_id" => user_id,
         "organization_id" => organization_id
       }) do
-    user.id == user_id || executive?(user.id, organization_id)
+    user.id == user_id ||
+      (executive?(user.id, organization_id) &&
+         !(Users.has_role?(:owner, user.id, organization_id) ||
+             Users.has_role?(:maintainer, user.id, organization_id)))
   end
 end
