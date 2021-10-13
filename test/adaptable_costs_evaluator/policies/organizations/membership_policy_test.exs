@@ -20,21 +20,21 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicyTest do
 
   describe "authorize/3 with read, update, and delete actions" do
     test "authorizes regular if it is their membership and an executive role", context do
-      membership = List.first(context[:user1].memberships)
+      params = %{"user_id" => context[:user1].id, "organization_id" => context[:organization].id}
       Organizations.create_role(context[:organization].id, context[:user2].id, %{"type" => "maintainer"})
 
       Enum.each([:read, :update, :delete], fn action ->
-        assert authorize(action, context[:user1], membership) == true
-        assert authorize(action, context[:user2], membership) == true
+        assert authorize(action, context[:user1], params) == true
+        assert authorize(action, context[:user2], params) == true
       end)
     end
 
     test "does not authorize user outside the organization", context do
       List.first(context[:user1].memberships) |> Repo.delete!()
-      membership = List.first(context[:user2].memberships)
+      params = %{"user_id" => context[:user2].id, "organization_id" => context[:organization].id}
 
       Enum.each([:read, :update, :delete], fn action ->
-        assert authorize(action, context[:user1], membership) == false
+        assert authorize(action, context[:user1], params) == false
       end)
     end
   end

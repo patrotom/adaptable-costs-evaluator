@@ -6,18 +6,20 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.OrganizationPolicy do
 
   @behaviour Bodyguard.Policy
 
-  def authorize(:read, %User{} = user, organization) do
-    Users.has_role?(:regular, user.id, organization.id) ||
-      executive?(user.id, organization.id)
+  def authorize(:read, %User{} = user, organization_id) do
+    Users.has_role?(:regular, user.id, organization_id) ||
+      executive?(user.id, organization_id)
   end
 
   def authorize(:create, %User{}, _params), do: true
 
-  def authorize(:update, %User{} = user, organization) do
-    executive?(user.id, organization.id)
+  def authorize(:update, %User{} = user, organization_id) do
+    executive?(user.id, organization_id)
   end
 
-  def authorize(:delete, %User{} = user, organization) do
-    Users.has_role?(:owner, user.id, organization.id)
+  def authorize(:delete, %User{} = user, organization_id) do
+    Users.has_role?(:owner, user.id, organization_id)
   end
+
+  def authorize(_, _, _), do: false
 end

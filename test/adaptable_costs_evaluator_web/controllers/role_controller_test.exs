@@ -1,88 +1,55 @@
 defmodule AdaptableCostsEvaluatorWeb.RoleControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
 
-  alias AdaptableCostsEvaluator.Organizations
-  alias AdaptableCostsEvaluator.Organizations.Role
+  use AdaptableCostsEvaluator.Fixtures.{UserFixture,
+                                        OrganizationFixture,
+                                        MembershipFixture,
+                                        RoleFixture}
 
-  @create_attrs %{
-    type: "some type"
-  }
-  @update_attrs %{
-    type: "some updated type"
-  }
-  @invalid_attrs %{type: nil}
-
-  def fixture(:role) do
-    {:ok, role} = Organizations.create_role(@create_attrs)
-    role
-  end
+  import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_authd_conn: 2]
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    user = user_fixture(admin: true)
+    organization = organization_fixture()
+    role = membership_fixture(organization.id, user.id) |> then(fn m -> m.roles end) |> List.first()
+    {:ok, conn: conn} = setup_authd_conn(user, conn)
+    %{conn: conn, user: user, organization: organization, role: role}
   end
 
   describe "index" do
-    test "lists all roles", %{conn: conn} do
-      conn = get(conn, Routes.role_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+    test "lists all roles of user in organization", %{
+      conn: conn,
+      user: user,
+      organization: organization,
+      role: role
+    } do
+      conn = get(conn, Routes.role_path(conn, :index, organization.id, user.id))
+      assert json_response(conn, 200)["data"] == [role_response(role)]
     end
   end
 
   describe "create role" do
-    test "renders role when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.role_path(conn, :create), role: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
-
-      conn = get(conn, Routes.role_path(conn, :show, id))
-
-      assert %{
-               "id" => id,
-               "type" => "some type"
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.role_path(conn, :create), role: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
-    end
-  end
-
-  describe "update role" do
-    setup [:create_role]
-
-    test "renders role when data is valid", %{conn: conn, role: %Role{id: id} = role} do
-      conn = put(conn, Routes.role_path(conn, :update, role), role: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-      conn = get(conn, Routes.role_path(conn, :show, id))
-
-      assert %{
-               "id" => id,
-               "type" => "some updated type"
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, role: role} do
-      conn = put(conn, Routes.role_path(conn, :update, role), role: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+    test "creates new role for the user in the organization", %{
+      conn: conn,
+      user: user,
+      organization: organization,
+      role: _
+    } do
+      params = %{"role" => %{"type" => "owner"}}
+      conn = post(conn, Routes.role_path(conn, :create, organization.id, user.id), params)
+      assert response(conn, 201)
     end
   end
 
   describe "delete role" do
-    setup [:create_role]
-
-    test "deletes chosen role", %{conn: conn, role: role} do
-      conn = delete(conn, Routes.role_path(conn, :delete, role))
+    test "deletes existing role of the user in the organization", %{
+      conn: conn,
+      user: user,
+      organization: organization,
+      role: role
+    } do
+      conn = delete(conn, Routes.role_path(conn, :delete, organization.id, user.id), role: role_response(role))
       assert response(conn, 204)
-
-      assert_error_sent 404, fn ->
-        get(conn, Routes.role_path(conn, :show, role))
-      end
     end
-  end
-
-  defp create_role(_) do
-    role = fixture(:role)
-    %{role: role}
   end
 end

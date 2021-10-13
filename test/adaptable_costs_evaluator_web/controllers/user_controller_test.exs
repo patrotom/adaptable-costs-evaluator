@@ -7,7 +7,7 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
   import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_conns: 2]
 
   setup %{conn: conn} do
-    user_fixture()
+    user_fixture(admin: true)
     |> setup_conns(conn)
   end
 

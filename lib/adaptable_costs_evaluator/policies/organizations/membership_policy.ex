@@ -9,8 +9,10 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicy do
     executive?(user.id, organization_id)
   end
 
-  def authorize(_action, %User{} = user, membership) do
-    user.id == membership.user_id ||
-      executive?(user.id, membership.organization_id)
+  def authorize(_action, %User{} = user, %{
+        "user_id" => user_id,
+        "organization_id" => organization_id
+      }) do
+    user.id == user_id || executive?(user.id, organization_id)
   end
 end

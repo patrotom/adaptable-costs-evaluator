@@ -16,24 +16,29 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.RolePolicyTest do
     %{user: user, organization: organization, role: role}
   end
 
-  describe "authorize/3 with read action" do
+  describe "authorize/3 with list action" do
     test "authorizes regular", context do
-      assert authorize(:read, context[:user], context[:role]) == true
+      assert authorize(:list, context[:user], context[:organization].id) == true
     end
 
-    test "authorizes executive", context do
+    test "authorizes maintainer", context do
       Organizations.delete_role(:regular, context[:organization].id, context[:user].id)
 
       Organizations.create_role(context[:organization].id, context[:user].id, %{
         "type" => "maintainer"
       })
 
-      assert authorize(:read, context[:user], context[:role]) == true
+      assert authorize(:list, context[:user], context[:organization].id) == true
     end
 
-    test "does not authorize user without a role", context do
+    test "authorizes owner", context do
       Organizations.delete_role(:regular, context[:organization].id, context[:user].id)
-      assert authorize(:read, context[:user], context[:role]) == false
+
+      Organizations.create_role(context[:organization].id, context[:user].id, %{
+        "type" => "owner"
+      })
+
+      assert authorize(:list, context[:user], context[:organization].id) == true
     end
   end
 
@@ -43,70 +48,58 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.RolePolicyTest do
         "type" => "maintainer"
       })
 
-      Enum.each([:create, :update], fn action ->
+      Enum.each([:create, :update, :delete], fn action ->
         assert authorize(action, context[:user], %{
                  "type" => "regular",
                  "organization_id" => context[:organization].id
                }) == true
       end)
-
-      assert authorize(:delete, context[:user], context[:role]) == true
     end
 
     test "does not authorize regular", context do
-      Enum.each([:create, :update], fn action ->
+      Enum.each([:create, :update, :delete], fn action ->
         assert authorize(action, context[:user], %{
                  "type" => "regular",
                  "organization_id" => context[:organization].id
                }) == false
       end)
-
-      assert authorize(:delete, context[:user], context[:role]) == false
     end
   end
 
   describe "authorize/3 with create, update and delete actions for executive roles" do
     test "authorizes owner", context do
-      {:ok, role} =
-        Organizations.create_role(context[:organization].id, context[:user].id, %{
-          "type" => "owner"
-        })
+      Organizations.create_role(context[:organization].id, context[:user].id, %{
+        "type" => "owner"
+      })
 
-      Enum.each([:create, :update], fn action ->
+      Enum.each([:create, :update, :delete], fn action ->
         assert authorize(action, context[:user], %{
                  "type" => "maintainer",
                  "organization_id" => context[:organization].id
                }) == true
       end)
-
-      assert authorize(:delete, context[:user], role) == true
     end
 
     test "does not authorize maintainer", context do
-      {:ok, role} =
-        Organizations.create_role(context[:organization].id, context[:user].id, %{
-          "type" => "maintainer"
-        })
+      Organizations.create_role(context[:organization].id, context[:user].id, %{
+        "type" => "maintainer"
+      })
 
-      Enum.each([:create, :update], fn action ->
+      Enum.each([:create, :update, :delete], fn action ->
         assert authorize(action, context[:user], %{
                  "type" => "maintainer",
                  "organization_id" => context[:organization].id
                }) == false
       end)
-
-      assert authorize(:delete, context[:user], role) == false
     end
 
     test "does not authorize regular", context do
-      Enum.each([:create, :update], fn action ->
+      Enum.each([:create, :update, :delete], fn action ->
         assert authorize(action, context[:user], %{
                  "type" => "maintainer",
                  "organization_id" => context[:organization].id
                }) == false
       end)
-
-      assert authorize(:delete, context[:user], context[:role]) == false
     end
   end
 end
