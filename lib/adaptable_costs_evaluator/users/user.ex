@@ -4,6 +4,7 @@ defmodule AdaptableCostsEvaluator.Users.User do
 
   alias AdaptableCostsEvaluator.Users.Credential
   alias AdaptableCostsEvaluator.Organizations.{Organization, Membership}
+  alias AdaptableCostsEvaluator.Computations.Computation
 
   schema "users" do
     field :first_name, :string
@@ -14,6 +15,7 @@ defmodule AdaptableCostsEvaluator.Users.User do
 
     has_one :credential, Credential
     has_many :memberships, Membership
+    has_many :computations, Computation, foreign_key: :creator_id
     many_to_many :organizations, Organization, join_through: "memberships"
 
     timestamps()
