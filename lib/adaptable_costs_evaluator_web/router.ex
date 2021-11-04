@@ -34,7 +34,8 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
 
     resources "/computations", ComputationController, except: [:new, :index]
     get "/organizations/:organization_id/computations", ComputationController, :index, as: :organization_computation
-    get "/users/:user_id/computations", ComputationController, :index, as: :user_computation
+    delete "/organizations/:organization_id/computations/:computation_id", ComputationController, :delete
+    get "/users/:creator_id/computations", ComputationController, :index, as: :user_computation
   end
 
   # Enables LiveDashboard only for development

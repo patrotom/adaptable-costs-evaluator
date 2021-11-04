@@ -7,14 +7,15 @@ defmodule AdaptableCostsEvaluator.Computations do
   alias AdaptableCostsEvaluator.Repo
 
   alias AdaptableCostsEvaluator.Computations.Computation
+  alias AdaptableCostsEvaluator.Users.User
   alias AdaptableCostsEvaluator.{Users, Organizations}
 
-  def list_computations(%{creator_id: creator_id}) do
+  def list_computations(creator_id: creator_id) do
     user = Users.get_user!(creator_id)
     Repo.preload(user, :computations).computations
   end
 
-  def list_computations(%{organization_id: organization_id}) do
+  def list_computations(organization_id: organization_id) do
     organization = Organizations.get_organization!(organization_id)
     Repo.preload(organization, :computations).computations
   end
@@ -35,6 +36,10 @@ defmodule AdaptableCostsEvaluator.Computations do
   """
   def get_computation!(id), do: Repo.get!(Computation, id)
 
+  def get_computation_by!(attrs) do
+    Repo.get_by!(Computation, attrs)
+  end
+
   @doc """
   Creates a computation.
 
@@ -47,7 +52,9 @@ defmodule AdaptableCostsEvaluator.Computations do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_computation(attrs \\ %{}) do
+  def create_computation(%User{} = user, attrs \\ %{}) do
+    attrs = Map.put(attrs, "creator_id", user.id)
+
     %Computation{}
     |> Computation.changeset(attrs)
     |> Repo.insert()
@@ -66,6 +73,8 @@ defmodule AdaptableCostsEvaluator.Computations do
 
   """
   def update_computation(%Computation{} = computation, attrs) do
+    attrs = %{name: Map.get(attrs, "name")}
+
     computation
     |> Computation.changeset(attrs)
     |> Repo.update()
@@ -83,8 +92,17 @@ defmodule AdaptableCostsEvaluator.Computations do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_computation(%Computation{} = computation) do
-    Repo.delete(computation)
+  def delete_computation(
+        %Computation{} = computation,
+        [from_org: fo] \\ [from_org: false]
+      ) do
+    if fo do
+      computation
+      |> Computation.changeset(%{organization_id: nil})
+      |> Repo.update()
+    else
+      Repo.delete(computation)
+    end
   end
 
   @doc """

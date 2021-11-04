@@ -11,7 +11,11 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationView do
   end
 
   def render("computation.json", %{computation: computation}) do
-    %{id: computation.id,
-      name: computation.name}
+    %{
+      id: computation.id,
+      name: computation.name,
+      creator_id: computation.creator_id,
+      organization_id: computation.organization_id,
+    }
   end
 end
