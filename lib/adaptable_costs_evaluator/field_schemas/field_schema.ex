@@ -15,6 +15,7 @@ defmodule AdaptableCostsEvaluator.FieldSchemas.FieldSchema do
     |> cast(attrs, [:name, :definition])
     |> validate_required([:name, :definition])
     |> unique_constraint(:name)
+    |> validate_length(:name, max: 100)
   end
 
   defdelegate authorize(action, user, params),

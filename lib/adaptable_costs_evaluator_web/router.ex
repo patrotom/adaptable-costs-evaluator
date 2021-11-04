@@ -32,7 +32,9 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
     post "/organizations/:organization_id/users/:user_id/roles", RoleController, :create
     delete "/organizations/:organization_id/users/:user_id/roles", RoleController, :delete
 
-    resources "/computations", ComputationController, except: [:new, :edit, :index]
+    resources "/computations", ComputationController, except: [:new, :edit, :index] do
+      resources "/formulas", FormulaController, except: [:new, :edit]
+    end
     get "/organizations/:organization_id/computations", ComputationController, :index, as: :organization_computation
     post "/organizations/:organization_id/computations/:computation_id", ComputationController, :create
     delete "/organizations/:organization_id/computations/:computation_id", ComputationController, :delete

@@ -4,12 +4,15 @@ defmodule AdaptableCostsEvaluator.Computations.Computation do
 
   alias AdaptableCostsEvaluator.Users.User
   alias AdaptableCostsEvaluator.Organizations.Organization
+  alias AdaptableCostsEvaluator.Formulas.Formula
 
   schema "computations" do
     field :name, :string
 
     belongs_to :user, User, foreign_key: :creator_id
     belongs_to :organization, Organization
+
+    has_many :formulas, Formula
 
     timestamps()
   end
