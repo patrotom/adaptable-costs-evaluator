@@ -60,6 +60,14 @@ defmodule AdaptableCostsEvaluator.Computations do
     |> Repo.insert()
   end
 
+  def add_computation_to_organization(%Computation{} = computation, organization_id) do
+    organization = Organizations.get_organization!(organization_id)
+
+    computation
+    |> Computation.changeset(%{organization_id: organization.id})
+    |> Repo.update()
+  end
+
   @doc """
   Updates a computation.
 

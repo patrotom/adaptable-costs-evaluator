@@ -34,6 +34,22 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
     end
   end
 
+  def create(conn, %{"organization_id" => organization_id, "computation_id" => computation_id}) do
+    computation = Computations.get_computation!(computation_id)
+    bodyguard_params = %{computation_id: computation_id, organization_id: organization_id}
+
+    with :ok <-
+           Bodyguard.permit(
+             Computation,
+             :organization_create,
+             current_user(conn),
+             bodyguard_params
+           ),
+         {:ok, _} <- Computations.add_computation_to_organization(computation, organization_id) do
+      send_resp(conn, :no_content, "")
+    end
+  end
+
   def show(conn, %{"id" => id}) do
     computation = Computations.get_computation!(id)
 
@@ -62,10 +78,11 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
   end
 
   def delete(conn, %{"organization_id" => organization_id, "computation_id" => computation_id}) do
-    computation = Computations.get_computation_by!(
-      organization_id: organization_id,
-      id: computation_id
-    )
+    computation =
+      Computations.get_computation_by!(
+        organization_id: organization_id,
+        id: computation_id
+      )
 
     with :ok <-
            Bodyguard.permit(

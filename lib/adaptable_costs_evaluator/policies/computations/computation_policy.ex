@@ -16,6 +16,16 @@ defmodule AdaptableCostsEvaluator.Policies.Computations.ComputationPolicy do
 
   def authorize(:create, _, _), do: true
 
+  def authorize(:organization_create, %User{} = user, %{
+        computation_id: computation_id,
+        organization_id: organization_id
+      }) do
+    computation = Computations.get_computation!(computation_id)
+
+    computation.creator_id == user.id &&
+      Organizations.list_roles(organization_id, user.id) != []
+  end
+
   def authorize(:delete, %User{} = user, computation_id) do
     computation = Computations.get_computation!(computation_id)
     computation.creator_id == user.id
