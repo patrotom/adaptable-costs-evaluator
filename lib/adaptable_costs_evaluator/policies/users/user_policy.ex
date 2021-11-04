@@ -7,14 +7,20 @@ defmodule AdaptableCostsEvaluator.Policies.Users.UserPolicy do
 
   @behaviour Bodyguard.Policy
 
-  def authorize(_action, %User{id: user_id}, user_id), do: true
+  def authorize(action, %User{} = current_user, user_id) do
+    if String.to_integer(user_id) == current_user.id do
+      true
+    else
+      _authorize(action, current_user, user_id)
+    end
+  end
 
-  def authorize(:read, %User{} = current_user, user_id) do
+  defp _authorize(:read, %User{} = current_user, user_id) do
     user = Users.get_user!(user_id)
     Organizations.colleagues?(current_user, user)
   end
 
-  def authorize(:create, _, _), do: true
+  defp _authorize(:create, _, _), do: true
 
-  def authorize(_, _, _), do: false
+  defp _authorize(_, _, _), do: false
 end
