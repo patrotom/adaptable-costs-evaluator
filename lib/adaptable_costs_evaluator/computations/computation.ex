@@ -5,6 +5,7 @@ defmodule AdaptableCostsEvaluator.Computations.Computation do
   alias AdaptableCostsEvaluator.Users.User
   alias AdaptableCostsEvaluator.Organizations.Organization
   alias AdaptableCostsEvaluator.Formulas.Formula
+  alias AdaptableCostsEvaluator.Inputs.Input
 
   schema "computations" do
     field :name, :string
@@ -13,6 +14,7 @@ defmodule AdaptableCostsEvaluator.Computations.Computation do
     belongs_to :organization, Organization
 
     has_many :formulas, Formula
+    has_many :inputs, Input
 
     timestamps()
   end
@@ -22,8 +24,7 @@ defmodule AdaptableCostsEvaluator.Computations.Computation do
     computation
     |> cast(attrs, [:name, :creator_id, :organization_id])
     |> validate_required([:name, :creator_id])
-    |> validate_length(:name, min: 1)
-    |> validate_length(:name, max: 255)
+    |> validate_length(:name, max: 100)
   end
 
   defdelegate authorize(action, user, params),

@@ -5,5 +5,10 @@ defmodule AdaptableCostsEvaluator.Policies.FieldSchemas.FieldSchemaPolicy do
 
   @behaviour Bodyguard.Policy
 
-  def authorize(_, %User{} = current_user, _), do: current_user.admin
+  def authorize(action, %User{} = current_user, _) do
+    case action do
+      a when a in [:read, :list] -> true
+      _ -> current_user.admin
+    end
+  end
 end

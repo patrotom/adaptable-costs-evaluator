@@ -19,6 +19,8 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
     formula
     |> cast(attrs, [:name, :label, :definition, :computation_id])
     |> validate_required([:name, :label, :computation_id])
+    |> validate_length(:name, max: 100)
+    |> validate_length(:label, max: 100)
     |> unique_constraint([:label, :computation_id])
   end
 

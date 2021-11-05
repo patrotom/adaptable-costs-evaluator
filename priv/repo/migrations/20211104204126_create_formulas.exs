@@ -6,7 +6,7 @@ defmodule AdaptableCostsEvaluator.Repo.Migrations.CreateFormulas do
       add :name, :string, null: false
       add :label, :string, null: false
       add :definition, :text
-      add :computation_id, references(:computations, on_delete: :delete_all)
+      add :computation_id, references(:computations, on_delete: :delete_all), null: false
 
       timestamps()
     end
