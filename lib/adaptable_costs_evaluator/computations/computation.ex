@@ -6,6 +6,7 @@ defmodule AdaptableCostsEvaluator.Computations.Computation do
   alias AdaptableCostsEvaluator.Organizations.Organization
   alias AdaptableCostsEvaluator.Formulas.Formula
   alias AdaptableCostsEvaluator.Inputs.Input
+  alias AdaptableCostsEvaluator.Outputs.Output
 
   schema "computations" do
     field :name, :string
@@ -15,6 +16,7 @@ defmodule AdaptableCostsEvaluator.Computations.Computation do
 
     has_many :formulas, Formula
     has_many :inputs, Input
+    has_many :outputs, Output
 
     timestamps()
   end

@@ -44,6 +44,9 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
 
       # Inputs
       resources "/inputs", InputController, except: [:new, :edit]
+
+      # Outputs
+      resources "/outputs", OutputController, except: [:new, :edit]
     end
     get "/organizations/:organization_id/computations", ComputationController, :index, as: :organization_computation
     post "/organizations/:organization_id/computations/:computation_id", ComputationController, :create

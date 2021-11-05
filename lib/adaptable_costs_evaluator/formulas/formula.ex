@@ -3,6 +3,7 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
   import Ecto.Changeset
 
   alias AdaptableCostsEvaluator.Computations.Computation
+  alias AdaptableCostsEvaluator.Outputs.Output
 
   schema "formulas" do
     field :definition, :string
@@ -10,6 +11,7 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
     field :name, :string
 
     belongs_to :computation, Computation
+    has_many :outputs, Output
 
     timestamps()
   end

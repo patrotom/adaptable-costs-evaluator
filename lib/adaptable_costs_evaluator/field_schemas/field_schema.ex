@@ -3,12 +3,14 @@ defmodule AdaptableCostsEvaluator.FieldSchemas.FieldSchema do
   import Ecto.Changeset
 
   alias AdaptableCostsEvaluator.Inputs.Input
+  alias AdaptableCostsEvaluator.Outputs.Output
 
   schema "field_schemas" do
     field :definition, :map
     field :name, :string
 
     has_many :inputs, Input
+    has_many :outputs, Output
 
     timestamps()
   end
