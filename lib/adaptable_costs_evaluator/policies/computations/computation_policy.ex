@@ -7,7 +7,7 @@ defmodule AdaptableCostsEvaluator.Policies.Computations.ComputationPolicy do
   @behaviour Bodyguard.Policy
 
   def authorize(:list, %User{} = user, creator_id) do
-    user.id == String.to_integer(creator_id)
+    user.id == creator_id
   end
 
   def authorize(:organization_list, %User{} = user, organization_id) do

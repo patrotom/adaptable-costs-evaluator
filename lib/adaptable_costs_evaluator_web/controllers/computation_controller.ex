@@ -17,7 +17,8 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
   end
 
   def index(conn, %{"creator_id" => creator_id}) do
-    with :ok <- Bodyguard.permit(Computation, :list, current_user(conn), creator_id) do
+    with :ok <-
+           Bodyguard.permit(Computation, :list, current_user(conn), String.to_integer(creator_id)) do
       computations = Computations.list_computations(creator_id: creator_id)
       render(conn, "index.json", computations: computations)
     end
