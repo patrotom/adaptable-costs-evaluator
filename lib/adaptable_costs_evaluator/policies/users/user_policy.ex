@@ -8,7 +8,7 @@ defmodule AdaptableCostsEvaluator.Policies.Users.UserPolicy do
   @behaviour Bodyguard.Policy
 
   def authorize(action, %User{} = current_user, user_id) do
-    if String.to_integer(user_id) == current_user.id do
+    if user_id == current_user.id do
       true
     else
       _authorize(action, current_user, user_id)

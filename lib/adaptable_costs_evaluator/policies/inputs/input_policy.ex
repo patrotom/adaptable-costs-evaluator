@@ -4,9 +4,11 @@ defmodule AdaptableCostsEvaluator.Policies.Inputs.InputPolicy do
   alias AdaptableCostsEvaluator.Computations.Computation
   alias AdaptableCostsEvaluator.Users.User
 
+  alias AdaptableCostsEvaluator.Policies.Computations.ComputationPolicy
+
   @behaviour Bodyguard.Policy
 
   def authorize(_, %User{} = user, %Computation{} = computation) do
-    Bodyguard.permit(Computation, :read, user, computation.id)
+    ComputationPolicy.authorize(:read, user, computation.id)
   end
 end

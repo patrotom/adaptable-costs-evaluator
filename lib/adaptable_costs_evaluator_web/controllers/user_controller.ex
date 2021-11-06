@@ -27,7 +27,7 @@ defmodule AdaptableCostsEvaluatorWeb.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    with :ok <- Bodyguard.permit(User, :read, current_user(conn), id) do
+    with :ok <- Bodyguard.permit(User, :read, current_user(conn), String.to_integer(id)) do
       user = Users.get_user!(id)
       render(conn, "show.json", user: user)
     end
