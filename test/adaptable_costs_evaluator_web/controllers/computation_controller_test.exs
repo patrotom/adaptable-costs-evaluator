@@ -1,88 +1,146 @@
 defmodule AdaptableCostsEvaluatorWeb.ComputationControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
+  use AdaptableCostsEvaluator.Fixtures.{UserFixture, OrganizationFixture, ComputationFixture}
 
-  alias AdaptableCostsEvaluator.Computations
-  alias AdaptableCostsEvaluator.Computations.Computation
+  alias AdaptableCostsEvaluator.{Computations, Organizations}
 
-  @create_attrs %{
-    name: "some name"
-  }
-  @update_attrs %{
-    name: "some updated name"
-  }
-  @invalid_attrs %{name: nil}
-
-  def fixture(:computation) do
-    {:ok, computation} = Computations.create_computation(@create_attrs)
-    computation
-  end
+  import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_authd_conn: 2]
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    user = user_fixture(admin: true)
+    organization = organization_fixture()
+    Organizations.create_membership(organization.id, user.id)
+    computation = computation_fixture(user, %{"organization_id" => organization.id})
+    {:ok, conn: conn} = setup_authd_conn(user, conn)
+
+    %{conn: conn, user: user, organization: organization, computation: computation}
   end
 
   describe "index" do
-    test "lists all computations", %{conn: conn} do
-      conn = get(conn, Routes.computation_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+    test "lists all computations of user", context do
+      conn =
+        get(
+          context[:conn],
+          Routes.user_computation_path(context[:conn], :index, context[:user].id)
+        )
+
+      assert json_response(conn, 200)["data"] == [computation_response(context[:computation])]
+    end
+
+    test "lists all computations in organization", context do
+      conn =
+        get(
+          context[:conn],
+          Routes.organization_computation_path(context[:conn], :index, context[:organization].id)
+        )
+
+      assert json_response(conn, 200)["data"] == [computation_response(context[:computation])]
     end
   end
 
   describe "create computation" do
-    test "renders computation when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.computation_path(conn, :create), computation: @create_attrs)
+    test "renders computation when data is valid", context do
+      conn =
+        post(context[:conn], Routes.computation_path(context[:conn], :create),
+          computation: @valid_computation_attrs
+        )
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.computation_path(conn, :show, id))
+      computation = Computations.get_computation!(id)
 
-      assert %{
-               "id" => id,
-               "name" => "some name"
-             } = json_response(conn, 200)["data"]
+      assert json_response(conn, 200)["data"] == computation_response(computation)
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.computation_path(conn, :create), computation: @invalid_attrs)
+    test "renders errors when data is invalid", context do
+      conn =
+        post(context[:conn], Routes.computation_path(context[:conn], :create),
+          computation: @invalid_computation_attrs
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
-  describe "update computation" do
-    setup [:create_computation]
+  describe "add computation to organization" do
+    test "renders no content", context do
+      conn =
+        post(
+          context[:conn],
+          Routes.computation_path(
+            context[:conn],
+            :create,
+            context[:organization].id,
+            context[:computation].id
+          )
+        )
 
-    test "renders computation when data is valid", %{conn: conn, computation: %Computation{id: id} = computation} do
-      conn = put(conn, Routes.computation_path(conn, :update, computation), computation: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert response(conn, 204)
+    end
+  end
+
+  describe "update computation" do
+    test "renders computation when data is valid", context do
+      conn =
+        patch(
+          context[:conn],
+          Routes.computation_path(context[:conn], :update, context[:computation]),
+          computation: @update_computation_attrs
+        )
+
+      assert %{"id" => id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.computation_path(conn, :show, id))
+      computation = Computations.get_computation!(id)
 
-      assert %{
-               "id" => id,
-               "name" => "some updated name"
-             } = json_response(conn, 200)["data"]
+      assert json_response(conn, 200)["data"] == computation_response(computation)
     end
 
-    test "renders errors when data is invalid", %{conn: conn, computation: computation} do
-      conn = put(conn, Routes.computation_path(conn, :update, computation), computation: @invalid_attrs)
+    test "renders errors when data is invalid", context do
+      conn =
+        put(
+          context[:conn],
+          Routes.computation_path(context[:conn], :update, context[:computation]),
+          computation: @invalid_computation_attrs
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "delete computation" do
-    setup [:create_computation]
+    test "deletes chosen computation", context do
+      conn =
+        delete(
+          context[:conn],
+          Routes.computation_path(context[:conn], :delete, context[:computation])
+        )
 
-    test "deletes chosen computation", %{conn: conn, computation: computation} do
-      conn = delete(conn, Routes.computation_path(conn, :delete, computation))
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
-        get(conn, Routes.computation_path(conn, :show, computation))
+        get(conn, Routes.computation_path(conn, :show, context[:computation]))
       end
     end
-  end
 
-  defp create_computation(_) do
-    computation = fixture(:computation)
-    %{computation: computation}
+    test "deletes computation from the organization", context do
+      conn =
+        delete(
+          context[:conn],
+          Routes.computation_path(
+            context[:conn],
+            :delete,
+            context[:organization].id,
+            context[:computation].id
+          )
+        )
+
+      assert response(conn, 204)
+
+      computation = Computations.get_computation!(context[:computation].id)
+
+      assert computation.organization_id == nil
+    end
   end
 end
