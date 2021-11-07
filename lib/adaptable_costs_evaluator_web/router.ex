@@ -21,16 +21,40 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
   scope "/api/v1", AdaptableCostsEvaluatorWeb do
     pipe_through [:api, :jwt_authenticated]
 
+    # Users
     resources "/users", UserController, except: [:create, :new, :edit]
+
+    # Organizations
     resources "/organizations", OrganizationController, except: [:new, :edit]
 
+    # Memberships
     get "/organizations/:organization_id/users", MembershipController, :index
     post "/organizations/:organization_id/users/:user_id", MembershipController, :create
     delete "/organizations/:organization_id/users/:user_id", MembershipController, :delete
 
+    # Roles
     get "/organizations/:organization_id/users/:user_id/roles", RoleController, :index
     post "/organizations/:organization_id/users/:user_id/roles", RoleController, :create
     delete "/organizations/:organization_id/users/:user_id/roles", RoleController, :delete
+
+    # Computations
+    resources "/computations", ComputationController, except: [:new, :edit, :index] do
+      # Formulas
+      resources "/formulas", FormulaController, except: [:new, :edit]
+
+      # Inputs
+      resources "/inputs", InputController, except: [:new, :edit]
+
+      # Outputs
+      resources "/outputs", OutputController, except: [:new, :edit]
+    end
+    get "/organizations/:organization_id/computations", ComputationController, :index, as: :organization_computation
+    post "/organizations/:organization_id/computations/:computation_id", ComputationController, :create
+    delete "/organizations/:organization_id/computations/:computation_id", ComputationController, :delete
+    get "/users/:creator_id/computations", ComputationController, :index, as: :user_computation
+
+    # Field Schemas
+    resources "/field-schemas", FieldSchemaController, except: [:new, :edit]
   end
 
   # Enables LiveDashboard only for development

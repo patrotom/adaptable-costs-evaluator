@@ -4,12 +4,14 @@ defmodule AdaptableCostsEvaluator.Organizations.Organization do
 
   alias AdaptableCostsEvaluator.Organizations.Membership
   alias AdaptableCostsEvaluator.Users.User
+  alias AdaptableCostsEvaluator.Computations.Computation
 
   schema "organizations" do
     field :name, :string
     field :username, :string
 
     has_many :memberships, Membership
+    has_many :computations, Computation
     many_to_many :users, User, join_through: "memberships"
 
     timestamps()
