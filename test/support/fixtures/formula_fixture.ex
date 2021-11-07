@@ -6,14 +6,14 @@ defmodule AdaptableCostsEvaluator.Fixtures.FormulaFixture do
 
   using do
     quote do
-      @valid_attrs %{definition: "some definition", label: "some label", name: "some name"}
-      @update_attrs %{definition: "some updated definition", label: "some updated label", name: "some updated name"}
-      @invalid_attrs %{definition: nil, label: nil, name: nil}
+      @valid_formula_attrs %{definition: "some definition", label: "some label", name: "some name"}
+      @update_formula_attrs %{definition: "some updated definition", label: "some updated label", name: "some updated name"}
+      @invalid_formula_attrs %{definition: nil, label: nil, name: nil}
 
       def formula_fixture(attrs \\ %{}) do
         {:ok, formula} =
           attrs
-          |> Enum.into(@valid_attrs)
+          |> Enum.into(@valid_formula_attrs)
           |> Formulas.create_formula()
 
         formula

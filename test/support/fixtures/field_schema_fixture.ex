@@ -6,14 +6,14 @@ defmodule AdaptableCostsEvaluator.Fixtures.FieldSchemaFixture do
 
   using do
     quote do
-      @valid_attrs %{definition: %{}, name: "some name"}
-      @update_attrs %{definition: %{}, name: "some updated name"}
-      @invalid_attrs %{definition: nil, name: nil}
+      @valid_field_schema_attrs %{definition: %{}, name: "some name"}
+      @update_field_schema_attrs %{definition: %{}, name: "some updated name"}
+      @invalid_field_schema_attrs %{definition: nil, name: nil}
 
       def field_schema_fixture(attrs \\ %{}) do
         {:ok, field_schema} =
           attrs
-          |> Enum.into(@valid_attrs)
+          |> Enum.into(@valid_field_schema_attrs)
           |> FieldSchemas.create_field_schema()
 
         field_schema
