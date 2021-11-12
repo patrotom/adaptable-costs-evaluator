@@ -4,6 +4,10 @@ defmodule AdaptableCostsEvaluator.Evaluators.Evaluator do
 
   alias AdaptableCostsEvaluator.Formulas.Formula
 
+  @implementations [
+    "AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluator"
+  ]
+
   schema "evaluators" do
     field :description, :string
     field :module, :string
@@ -20,6 +24,17 @@ defmodule AdaptableCostsEvaluator.Evaluators.Evaluator do
     |> cast(attrs, [:name, :description, :module])
     |> validate_required([:name, :module])
     |> unique_constraint(:name)
+    |> validate_module()
+  end
+
+  def validate_module(changeset) do
+    validate_change(changeset, :module, fn :module, module ->
+      if !Enum.member?(@implementations, module) do
+        [module: "does not exist"]
+      else
+        []
+      end
+    end)
   end
 
   defdelegate authorize(action, user, params),
