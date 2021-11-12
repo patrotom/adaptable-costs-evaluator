@@ -55,6 +55,9 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
 
     # Field Schemas
     resources "/field-schemas", FieldSchemaController, except: [:new, :edit]
+
+    # Evaluators
+    resources "/evaluators", EvaluatorController, except: [:new, :edit]
   end
 
   # Enables LiveDashboard only for development

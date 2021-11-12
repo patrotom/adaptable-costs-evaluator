@@ -11,10 +11,13 @@ defmodule AdaptableCostsEvaluatorWeb.FormulaView do
   end
 
   def render("formula.json", %{formula: formula}) do
-    %{id: formula.id,
+    %{
+      id: formula.id,
       name: formula.name,
       label: formula.label,
       definition: formula.definition,
-      computation_id: formula.computation_id}
+      computation_id: formula.computation_id,
+      evaluator_id: formula.evaluator_id,
+    }
   end
 end
