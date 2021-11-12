@@ -24,4 +24,6 @@ defmodule AdaptableCostsEvaluator.Evaluators.Evaluator do
 
   defdelegate authorize(action, user, params),
     to: AdaptableCostsEvaluator.Policies.Evaluators.EvaluatorPolicy
+
+  @callback evaluate(%Formula{}) :: any()
 end
