@@ -1,6 +1,6 @@
 defmodule AdaptableCostsEvaluator.FieldSchemasTest do
   use AdaptableCostsEvaluator.DataCase
-  use AdaptableCostsEvaluator.Fixtures.{FieldSchemaFixture}
+  use AdaptableCostsEvaluator.Fixtures.FieldSchemaFixture
 
   alias AdaptableCostsEvaluator.FieldSchemas
 
@@ -36,7 +36,6 @@ defmodule AdaptableCostsEvaluator.FieldSchemasTest do
     test "update_field_schema/2 with valid data updates the field_schema", %{
       field_schema: field_schema
     } do
-
       assert {:ok, %FieldSchema{} = field_schema} =
                FieldSchemas.update_field_schema(field_schema, @update_field_schema_attrs)
 

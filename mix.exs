@@ -47,7 +47,8 @@ defmodule AdaptableCostsEvaluator.MixProject do
       {:comeonin, "~> 5.3"},
       {:bcrypt_elixir, "~> 2.3"},
       {:guardian, "~> 2.2"},
-      {:bodyguard, "~> 2.4"}
+      {:bodyguard, "~> 2.4"},
+      {:abacus, "~> 2.0"}
     ]
   end
 

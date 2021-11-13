@@ -6,6 +6,7 @@ defmodule AdaptableCostsEvaluator.Formulas do
   import Ecto.Query, warn: false
   alias AdaptableCostsEvaluator.Repo
 
+  alias AdaptableCostsEvaluator.Outputs
   alias AdaptableCostsEvaluator.Formulas.Formula
   alias AdaptableCostsEvaluator.Computations.Computation
 
@@ -103,5 +104,33 @@ defmodule AdaptableCostsEvaluator.Formulas do
   """
   def change_formula(%Formula{} = formula, attrs \\ %{}) do
     Formula.changeset(formula, attrs)
+  end
+
+  def evaluate_formula(%Formula{evaluator_id: nil}) do
+    {:error, "evaluator not specified"}
+  end
+
+  def evaluate_formula(%Formula{} = formula) do
+    evaluator = Repo.preload(formula, :evaluator).evaluator
+    result = apply(String.to_existing_atom("Elixir.#{evaluator.module}"), :evaluate, [formula])
+
+    case result do
+      {:ok, value} ->
+        attrs = %{
+          outputs: apply_result_to_outputs(formula, value),
+          result: value,
+        }
+        {:ok, attrs}
+      {:error, error} -> {:error, {:unprocessable_entity, [error]}}
+    end
+  end
+
+  defp apply_result_to_outputs(%Formula{} = formula, result) do
+    Repo.preload(formula, :outputs).outputs
+    |> Enum.each(fn o ->
+      Outputs.update_output(o, %{last_value: result})
+    end)
+
+    Repo.preload(formula, :outputs).outputs
   end
 end

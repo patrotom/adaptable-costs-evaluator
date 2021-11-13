@@ -40,6 +40,10 @@ defmodule AdaptableCostsEvaluator.Inputs do
     Repo.get_by!(Input, id: id, computation_id: computation.id)
   end
 
+  def get_by(attrs \\ []) do
+    Repo.get_by(Input, attrs)
+  end
+
   @doc """
   Creates a input.
 

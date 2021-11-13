@@ -35,4 +35,11 @@ defmodule AdaptableCostsEvaluatorWeb.FallbackController do
     |> put_view(AdaptableCostsEvaluatorWeb.ErrorView)
     |> render("403.json")
   end
+
+  def call(conn, {:error, {:unprocessable_entity, errors}}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> put_view(AdaptableCostsEvaluatorWeb.ErrorView)
+    |> render("422.json", errors: errors)
+  end
 end

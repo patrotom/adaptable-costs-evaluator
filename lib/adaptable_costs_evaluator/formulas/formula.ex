@@ -4,6 +4,7 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
 
   alias AdaptableCostsEvaluator.Computations.Computation
   alias AdaptableCostsEvaluator.Outputs.Output
+  alias AdaptableCostsEvaluator.Evaluators.Evaluator
 
   schema "formulas" do
     field :definition, :string
@@ -11,6 +12,7 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
     field :name, :string
 
     belongs_to :computation, Computation
+    belongs_to :evaluator, Evaluator
     has_many :outputs, Output
 
     timestamps()
@@ -19,7 +21,7 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
   @doc false
   def changeset(formula, attrs) do
     formula
-    |> cast(attrs, [:name, :label, :definition, :computation_id])
+    |> cast(attrs, [:name, :label, :definition, :computation_id, :evaluator_id])
     |> validate_required([:name, :label, :computation_id])
     |> validate_length(:name, max: 100)
     |> validate_length(:label, max: 100)

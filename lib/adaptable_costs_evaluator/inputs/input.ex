@@ -2,16 +2,13 @@ defmodule AdaptableCostsEvaluator.Inputs.Input do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias AdaptableCostsEvaluator.Computations.Computation
-  alias AdaptableCostsEvaluator.FieldSchemas.FieldSchema
-
   schema "inputs" do
     field :label, :string
-    field :last_value, :map
+    field :last_value, AdaptableCostsEvaluator.Types.JSONB
     field :name, :string
 
-    belongs_to :computation, Computation
-    belongs_to :field_schema, FieldSchema
+    belongs_to :computation, AdaptableCostsEvaluator.Computations.Computation
+    belongs_to :field_schema, AdaptableCostsEvaluator.FieldSchemas.FieldSchema
 
     timestamps()
   end

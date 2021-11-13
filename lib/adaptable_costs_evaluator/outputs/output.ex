@@ -8,7 +8,7 @@ defmodule AdaptableCostsEvaluator.Outputs.Output do
 
   schema "outputs" do
     field :label, :string
-    field :last_value, :map
+    field :last_value, AdaptableCostsEvaluator.Types.JSONB
     field :name, :string
 
     belongs_to :computation, Computation
@@ -21,7 +21,7 @@ defmodule AdaptableCostsEvaluator.Outputs.Output do
   @doc false
   def changeset(output, attrs) do
     output
-    |> cast(attrs, [:name, :label, :last_value, :computation_id, :field_schema_id])
+    |> cast(attrs, [:name, :label, :last_value, :computation_id, :field_schema_id, :formula_id])
     |> validate_required([:name, :label, :computation_id, :field_schema_id])
     |> validate_length(:name, max: 100)
     |> validate_length(:label, max: 100)
