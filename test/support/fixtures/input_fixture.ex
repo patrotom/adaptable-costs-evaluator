@@ -6,8 +6,8 @@ defmodule AdaptableCostsEvaluator.Fixtures.InputFixture do
 
   using do
     quote do
-      @valid_input_attrs %{label: "some label", last_value: %{}, name: "some name"}
-      @update_input_attrs %{label: "some updated label", last_value: %{}, name: "some updated name"}
+      @valid_input_attrs %{label: "some label", last_value: nil, name: "some name"}
+      @update_input_attrs %{label: "some updated label", last_value: nil, name: "some updated name"}
       @invalid_input_attrs %{label: nil, last_value: nil, name: nil}
 
       def input_fixture(attrs \\ %{}) do

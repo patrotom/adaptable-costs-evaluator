@@ -6,10 +6,9 @@ defmodule AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluator do
 
   @behaviour Evaluator
 
-  @impl Evaluator
-
   @inputs_regexp ~r/[a-zA-Z_$][a-zA-Z_$0-9]*/
 
+  @impl Evaluator
   def evaluate(%Formula{} = formula) do
     inputs = parse_inputs_from_formula(formula)
     invalid_inputs = filter_invalid_inputs(inputs)
