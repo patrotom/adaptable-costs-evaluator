@@ -1,84 +1,71 @@
 defmodule AdaptableCostsEvaluatorWeb.EvaluatorControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
+  use AdaptableCostsEvaluator.Fixtures.{UserFixture, EvaluatorFixture}
 
   alias AdaptableCostsEvaluator.Evaluators
-  alias AdaptableCostsEvaluator.Evaluators.Evaluator
 
-  @create_attrs %{
-    description: "some description",
-    module: "some module",
-    name: "some name"
-  }
-  @update_attrs %{
-    description: "some updated description",
-    module: "some updated module",
-    name: "some updated name"
-  }
-  @invalid_attrs %{description: nil, module: nil, name: nil}
-
-  def fixture(:evaluator) do
-    {:ok, evaluator} = Evaluators.create_evaluator(@create_attrs)
-    evaluator
-  end
+  import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_authd_conn: 2]
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    user = user_fixture(admin: true)
+    evaluator = evaluator_fixture()
+    {:ok, conn: conn} = setup_authd_conn(user, conn)
+
+    %{conn: conn, evaluator: evaluator}
   end
 
   describe "index" do
-    test "lists all evaluators", %{conn: conn} do
+    test "lists all evaluators", %{conn: conn, evaluator: evaluator} do
       conn = get(conn, Routes.evaluator_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200)["data"] == [evaluator_response(evaluator)]
     end
   end
 
   describe "create evaluator" do
-    test "renders evaluator when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.evaluator_path(conn, :create), evaluator: @create_attrs)
+    test "renders evaluator when data is valid", %{conn: conn, evaluator: _} do
+      attrs = %{@valid_evaluator_attrs | name: "custom"}
+
+      conn = post(conn, Routes.evaluator_path(conn, :create), evaluator: attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.evaluator_path(conn, :show, id))
+      evaluator = Evaluators.get_evaluator!(id)
 
-      assert %{
-               "id" => id,
-               "description" => "some description",
-               "module" => "some module",
-               "name" => "some name"
-             } = json_response(conn, 200)["data"]
+      assert json_response(conn, 200)["data"] == evaluator_response(evaluator)
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.evaluator_path(conn, :create), evaluator: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn, evaluator: _} do
+      conn = post(conn, Routes.evaluator_path(conn, :create), evaluator: @invalid_evaluator_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "update evaluator" do
-    setup [:create_evaluator]
+    test "renders evaluator when data is valid", %{conn: conn, evaluator: evaluator} do
+      conn =
+        put(conn, Routes.evaluator_path(conn, :update, evaluator),
+          evaluator: @update_evaluator_attrs
+        )
 
-    test "renders evaluator when data is valid", %{conn: conn, evaluator: %Evaluator{id: id} = evaluator} do
-      conn = put(conn, Routes.evaluator_path(conn, :update, evaluator), evaluator: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"id" => id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.evaluator_path(conn, :show, id))
+      evaluator = Evaluators.get_evaluator!(id)
 
-      assert %{
-               "id" => id,
-               "description" => "some updated description",
-               "module" => "some updated module",
-               "name" => "some updated name"
-             } = json_response(conn, 200)["data"]
+      assert json_response(conn, 200)["data"] == evaluator_response(evaluator)
     end
 
     test "renders errors when data is invalid", %{conn: conn, evaluator: evaluator} do
-      conn = put(conn, Routes.evaluator_path(conn, :update, evaluator), evaluator: @invalid_attrs)
+      conn =
+        put(conn, Routes.evaluator_path(conn, :update, evaluator),
+          evaluator: @invalid_evaluator_attrs
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "delete evaluator" do
-    setup [:create_evaluator]
-
     test "deletes chosen evaluator", %{conn: conn, evaluator: evaluator} do
       conn = delete(conn, Routes.evaluator_path(conn, :delete, evaluator))
       assert response(conn, 204)
@@ -87,10 +74,5 @@ defmodule AdaptableCostsEvaluatorWeb.EvaluatorControllerTest do
         get(conn, Routes.evaluator_path(conn, :show, evaluator))
       end
     end
-  end
-
-  defp create_evaluator(_) do
-    evaluator = fixture(:evaluator)
-    %{evaluator: evaluator}
   end
 end

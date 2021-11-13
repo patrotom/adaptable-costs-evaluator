@@ -22,4 +22,9 @@ defmodule AdaptableCostsEvaluatorWeb.ErrorView do
   def render("403.json", _assigns) do
     %{errors: ["forbidden"]}
   end
+
+  def render("422.json", assigns) do
+    errors = Map.get(assigns, :errors, ["unprocessable entity"])
+    %{errors: errors}
+  end
 end

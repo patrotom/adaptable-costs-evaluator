@@ -12,7 +12,7 @@ defmodule AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluatorTest
   alias AdaptableCostsEvaluator.Formulas
   alias AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluator
 
-  describe "evaluate" do
+  describe "evaluate/1" do
     setup do
       computation = user_fixture() |> computation_fixture()
 

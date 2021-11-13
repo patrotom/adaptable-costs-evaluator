@@ -1,20 +1,28 @@
 defmodule AdaptableCostsEvaluator.FormulasTest do
   use AdaptableCostsEvaluator.DataCase
-  use AdaptableCostsEvaluator.Fixtures.{UserFixture, ComputationFixture, FormulaFixture}
+
+  use AdaptableCostsEvaluator.Fixtures.{
+    UserFixture,
+    ComputationFixture,
+    FormulaFixture,
+    InputFixture,
+    OutputFixture,
+    FieldSchemaFixture,
+    EvaluatorFixture
+  }
 
   alias AdaptableCostsEvaluator.Formulas
+  alias AdaptableCostsEvaluator.Formulas.Formula
 
-  describe "formulas" do
-    alias AdaptableCostsEvaluator.Formulas.Formula
+  setup do
+    user = user_fixture()
+    computation = computation_fixture(user)
+    formula = formula_fixture(%{computation_id: computation.id})
 
-    setup do
-      user = user_fixture()
-      computation = computation_fixture(user)
-      formula = formula_fixture(%{computation_id: computation.id})
+    %{formula: formula, computation: computation}
+  end
 
-      %{formula: formula, computation: computation}
-    end
-
+  describe "common formulas functions" do
     test "list_formulas/1 returns all desired formulas", %{
       formula: formula,
       computation: computation
@@ -74,6 +82,55 @@ defmodule AdaptableCostsEvaluator.FormulasTest do
 
     test "change_formula/1 returns a formula changeset", %{formula: formula, computation: _} do
       assert %Ecto.Changeset{} = Formulas.change_formula(formula)
+    end
+  end
+
+  describe "evaluate_formula/1" do
+    setup %{formula: formula, computation: computation} do
+      evaluator = evaluator_fixture()
+      attrs = %{definition: "10 + 5 * input1", evaluator_id: evaluator.id}
+      {:ok, formula} = Formulas.update_formula(formula, attrs)
+
+      field_schema = field_schema_fixture(%{definition: %{"type" => "integer"}})
+
+      attrs = %{
+        computation_id: computation.id,
+        last_value: 5,
+        label: "input1",
+        field_schema_id: field_schema.id
+      }
+
+      input_fixture(attrs)
+
+      attrs = %{
+        computation_id: computation.id,
+        label: "output1",
+        field_schema_id: field_schema.id,
+        formula_id: formula.id
+      }
+
+      output = output_fixture(attrs)
+
+      %{formula: formula, output: output}
+    end
+
+    test "returns affected outputs and the result with the valid data", context do
+      {:ok, result} = Formulas.evaluate_formula(context[:formula])
+
+      assert result[:outputs] == [Repo.reload(context[:output])]
+      assert result[:result] == 35
+    end
+
+    test "returns error with the invalid data", context do
+      {:ok, formula} = Formulas.update_formula(context[:formula], %{definition: "+"})
+
+      assert {:error, _} = Formulas.evaluate_formula(formula)
+    end
+
+    test "returns error when evaluator is missing", context do
+      {:ok, formula} = Formulas.update_formula(context[:formula], %{evaluator_id: nil})
+
+      assert Formulas.evaluate_formula(formula) == {:error, "evaluator not specified"}
     end
   end
 end

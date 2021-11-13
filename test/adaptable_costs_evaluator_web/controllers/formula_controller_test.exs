@@ -1,9 +1,14 @@
 defmodule AdaptableCostsEvaluatorWeb.FormulaControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
+
   use AdaptableCostsEvaluator.Fixtures.{
     UserFixture,
     ComputationFixture,
-    FormulaFixture
+    FormulaFixture,
+    EvaluatorFixture,
+    FieldSchemaFixture,
+    OutputFixture,
+    InputFixture
   }
 
   alias AdaptableCostsEvaluator.Formulas
@@ -104,6 +109,46 @@ defmodule AdaptableCostsEvaluatorWeb.FormulaControllerTest do
       assert_error_sent 404, fn ->
         get(conn, Routes.computation_formula_path(conn, :show, computation.id, formula.id))
       end
+    end
+  end
+
+  describe "evaluate formula" do
+    setup %{conn: _, computation: computation, formula: formula} do
+      evaluator = evaluator_fixture()
+      attrs = %{definition: "10 + 5 * input1", evaluator_id: evaluator.id}
+      {:ok, formula} = Formulas.update_formula(formula, attrs)
+
+      field_schema = field_schema_fixture(%{definition: %{"type" => "integer"}})
+
+      attrs = %{
+        computation_id: computation.id,
+        last_value: 5,
+        label: "input1",
+        field_schema_id: field_schema.id
+      }
+
+      input_fixture(attrs)
+
+      attrs = %{
+        computation_id: computation.id,
+        label: "output1",
+        field_schema_id: field_schema.id,
+        formula_id: formula.id
+      }
+
+      output_fixture(attrs)
+
+      %{formula: formula}
+    end
+
+    test "evaluates chosen formula with the valid data", context do
+      conn =
+        post(
+          context[:conn],
+          Routes.computation_formula_path(context[:conn], :evaluate, context[:computation].id, context[:formula].id)
+        )
+
+      assert json_response(conn, 200)["data"] == evaluate_formula_response(context[:formula], 35)
     end
   end
 end

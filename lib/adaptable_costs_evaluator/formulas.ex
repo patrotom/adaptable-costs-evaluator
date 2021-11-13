@@ -106,6 +106,10 @@ defmodule AdaptableCostsEvaluator.Formulas do
     Formula.changeset(formula, attrs)
   end
 
+  def evaluate_formula(%Formula{evaluator_id: nil}) do
+    {:error, "evaluator not specified"}
+  end
+
   def evaluate_formula(%Formula{} = formula) do
     evaluator = Repo.preload(formula, :evaluator).evaluator
     result = apply(String.to_existing_atom("Elixir.#{evaluator.module}"), :evaluate, [formula])
@@ -117,7 +121,7 @@ defmodule AdaptableCostsEvaluator.Formulas do
           result: value,
         }
         {:ok, attrs}
-      {:error, error} -> {:error, error}
+      {:error, error} -> {:error, {:unprocessable_entity, [error]}}
     end
   end
 
