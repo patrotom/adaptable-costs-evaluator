@@ -41,6 +41,7 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
     resources "/computations", ComputationController, except: [:new, :edit, :index] do
       # Formulas
       resources "/formulas", FormulaController, except: [:new, :edit]
+      post "/formulas/:id/evaluate", FormulaController, :evaluate
 
       # Inputs
       resources "/inputs", InputController, except: [:new, :edit]

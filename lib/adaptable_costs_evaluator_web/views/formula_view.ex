@@ -1,6 +1,6 @@
 defmodule AdaptableCostsEvaluatorWeb.FormulaView do
   use AdaptableCostsEvaluatorWeb, :view
-  alias AdaptableCostsEvaluatorWeb.FormulaView
+  alias AdaptableCostsEvaluatorWeb.{FormulaView, OutputView}
 
   def render("index.json", %{formulas: formulas}) do
     %{data: render_many(formulas, FormulaView, "formula.json")}
@@ -17,7 +17,16 @@ defmodule AdaptableCostsEvaluatorWeb.FormulaView do
       label: formula.label,
       definition: formula.definition,
       computation_id: formula.computation_id,
-      evaluator_id: formula.evaluator_id,
+      evaluator_id: formula.evaluator_id
+    }
+  end
+
+  def render("evaluate.json", %{outputs: outputs, result: result}) do
+    %{
+      data: %{
+        result: result,
+        affected_outputs: OutputView.render("index.json", outputs: outputs),
+      }
     }
   end
 end

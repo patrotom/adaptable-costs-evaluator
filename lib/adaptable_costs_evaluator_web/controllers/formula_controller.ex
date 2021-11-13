@@ -62,5 +62,15 @@ defmodule AdaptableCostsEvaluatorWeb.FormulaController do
     end
   end
 
+  def evaluate(conn, %{"id" => id, "computation_id" => computation_id}) do
+    computation = get_computation!(computation_id)
+    formula = Formulas.get_formula!(id, computation)
+
+    with :ok <- Bodyguard.permit(Formula, :evaluate, current_user(conn), computation),
+         {:ok, %{outputs: outputs, result: result}} <- Formulas.evaluate_formula(formula) do
+      render(conn, "evaluate.json", outputs: outputs, result: result)
+    end
+  end
+
   defp get_computation!(id), do: Computations.get_computation!(id)
 end
