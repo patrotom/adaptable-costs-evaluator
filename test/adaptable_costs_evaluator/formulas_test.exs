@@ -61,7 +61,7 @@ defmodule AdaptableCostsEvaluator.FormulasTest do
     } do
       assert {:ok, %Formula{} = formula} = Formulas.update_formula(formula, @update_formula_attrs)
       assert formula.definition == "some updated definition"
-      assert formula.label == "some updated label"
+      assert formula.label == "some_updated_label"
       assert formula.name == "some updated name"
     end
 

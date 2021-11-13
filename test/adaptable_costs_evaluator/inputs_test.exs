@@ -37,7 +37,7 @@ defmodule AdaptableCostsEvaluator.InputsTest do
 
       assert {:ok, %Input{} = input} = Inputs.create_input(attrs)
       assert input.label == "custom"
-      assert input.last_value == %{}
+      assert input.last_value == nil
       assert input.name == "some name"
     end
 
@@ -47,8 +47,8 @@ defmodule AdaptableCostsEvaluator.InputsTest do
 
     test "update_input/2 with valid data updates the input", %{input: input, computation: _} do
       assert {:ok, %Input{} = input} = Inputs.update_input(input, @update_input_attrs)
-      assert input.label == "some updated label"
-      assert input.last_value == %{}
+      assert input.label == "some_updated_label"
+      assert input.last_value == nil
       assert input.name == "some updated name"
     end
 

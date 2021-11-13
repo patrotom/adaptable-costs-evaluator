@@ -44,7 +44,7 @@ defmodule AdaptableCostsEvaluator.OutputsTest do
 
       assert {:ok, %Output{} = output} = Outputs.create_output(attrs)
       assert output.label == "custom"
-      assert output.last_value == %{}
+      assert output.last_value == nil
       assert output.name == "some name"
     end
 
@@ -54,8 +54,8 @@ defmodule AdaptableCostsEvaluator.OutputsTest do
 
     test "update_output/2 with valid data updates the output", %{output: output, computation: _} do
       assert {:ok, %Output{} = output} = Outputs.update_output(output, @update_output_attrs)
-      assert output.label == "some updated label"
-      assert output.last_value == %{}
+      assert output.label == "some_updated_label"
+      assert output.last_value == nil
       assert output.name == "some updated name"
     end
 

@@ -9,12 +9,12 @@ defmodule AdaptableCostsEvaluator.Fixtures.FormulaFixture do
     quote do
       @valid_formula_attrs %{
         definition: "some definition",
-        label: "some label",
+        label: "some_label",
         name: "some name"
       }
       @update_formula_attrs %{
         definition: "some updated definition",
-        label: "some updated label",
+        label: "some_updated_label",
         name: "some updated name"
       }
       @invalid_formula_attrs %{definition: nil, label: nil, name: nil}

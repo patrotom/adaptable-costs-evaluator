@@ -2,7 +2,7 @@ defmodule AdaptableCostsEvaluator.Inputs.Input do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias AdaptableCostsEvaluator.Validators.FieldValueValidator
+  alias AdaptableCostsEvaluator.Validators.{FieldValueValidator, LabelValidator}
 
   schema "inputs" do
     field :label, :string
@@ -24,6 +24,7 @@ defmodule AdaptableCostsEvaluator.Inputs.Input do
     |> validate_length(:label, max: 100)
     |> unique_constraint([:label, :computation_id])
     |> FieldValueValidator.validate()
+    |> LabelValidator.validate()
   end
 
   defdelegate authorize(action, user, params),
