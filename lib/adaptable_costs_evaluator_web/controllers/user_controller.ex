@@ -60,4 +60,16 @@ defmodule AdaptableCostsEvaluatorWeb.UserController do
         {:error, :unauthorized}
     end
   end
+
+  def organizations(conn, %{"id" => id}) do
+    user = Users.get_user!(id)
+
+    with :ok <- Bodyguard.permit(User, :organizations, current_user(conn), user.id) do
+      organizations = Users.list_organizations(user.id)
+
+      conn
+      |> put_view(AdaptableCostsEvaluatorWeb.OrganizationView)
+      |> render("index.json", organizations: organizations)
+    end
+  end
 end

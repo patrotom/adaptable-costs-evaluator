@@ -1,8 +1,8 @@
 defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
-  use AdaptableCostsEvaluator.Fixtures.UserFixture
+  use AdaptableCostsEvaluator.Fixtures.{UserFixture, OrganizationFixture}
 
-  alias AdaptableCostsEvaluator.{Users, Guardian}
+  alias AdaptableCostsEvaluator.{Users, Guardian, Organizations}
 
   import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_conns: 2]
 
@@ -99,6 +99,16 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
       conn = post(conns[:plain], Routes.user_path(conns[:plain], :sign_in), body)
 
       assert json_response(conn, 401)["errors"] == ["unauthorized"]
+    end
+  end
+
+  describe "organizations" do
+    test "lists organizations of the user", %{conns: conns, user: user} do
+      organization = organization_fixture()
+      Organizations.create_membership(organization.id, user.id)
+
+      conn = get(conns[:authd], Routes.user_path(conns[:authd], :organizations, user.id))
+      assert json_response(conn, 200)["data"] == [organization_response(organization)]
     end
   end
 end
