@@ -5,6 +5,7 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
   alias AdaptableCostsEvaluator.Computations.Computation
   alias AdaptableCostsEvaluator.Outputs.Output
   alias AdaptableCostsEvaluator.Evaluators.Evaluator
+  alias AdaptableCostsEvaluator.Validators.LabelValidator
 
   schema "formulas" do
     field :definition, :string
@@ -26,6 +27,7 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
     |> validate_length(:name, max: 100)
     |> validate_length(:label, max: 100)
     |> unique_constraint([:label, :computation_id])
+    |> LabelValidator.validate()
   end
 
   defdelegate authorize(action, user, params),

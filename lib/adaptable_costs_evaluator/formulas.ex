@@ -127,10 +127,12 @@ defmodule AdaptableCostsEvaluator.Formulas do
 
   defp apply_result_to_outputs(%Formula{} = formula, result) do
     Repo.preload(formula, :outputs).outputs
-    |> Enum.each(fn o ->
-      Outputs.update_output(o, %{last_value: result})
+    |> Enum.map(fn o ->
+      case Outputs.update_output(o, %{last_value: result}) do
+        {:ok, output} -> output
+        {:error, _} -> nil
+      end
     end)
-
-    Repo.preload(formula, :outputs).outputs
+    |> Enum.filter(fn o -> o != nil end)
   end
 end

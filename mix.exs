@@ -48,7 +48,8 @@ defmodule AdaptableCostsEvaluator.MixProject do
       {:bcrypt_elixir, "~> 2.3"},
       {:guardian, "~> 2.2"},
       {:bodyguard, "~> 2.4"},
-      {:abacus, "~> 2.0"}
+      {:abacus, "~> 2.0"},
+      {:ex_json_schema, "~> 0.9.1"}
     ]
   end
 

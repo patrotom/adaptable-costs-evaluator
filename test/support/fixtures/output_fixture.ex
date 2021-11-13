@@ -6,10 +6,10 @@ defmodule AdaptableCostsEvaluator.Fixtures.OutputFixture do
 
   using do
     quote do
-      @valid_output_attrs %{label: "some label", last_value: %{}, name: "some name"}
+      @valid_output_attrs %{label: "some_label", last_value: nil, name: "some name"}
       @update_output_attrs %{
-        label: "some updated label",
-        last_value: %{},
+        label: "some_updated_label",
+        last_value: nil,
         name: "some updated name"
       }
       @invalid_output_attrs %{label: nil, last_value: nil, name: nil}
