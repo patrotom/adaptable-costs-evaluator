@@ -2,10 +2,11 @@ use Mix.Config
 
 # Configure your database
 config :adaptable_costs_evaluator, AdaptableCostsEvaluator.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "adaptable_costs_evaluator_dev",
-  hostname: "localhost",
+  username: System.get_env("PGUSER", "postgres"),
+  password: System.get_env("PGPASSWORD", "postgres"),
+  database: System.get_env("PGDATABASE_DEV", "adaptable_costs_evaluator_dev"),
+  hostname: System.get_env("PGHOST", "localhost"),
+  port: String.to_integer(System.get_env("PGPORT", "5433")),
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -16,7 +17,7 @@ config :adaptable_costs_evaluator, AdaptableCostsEvaluator.Repo,
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :adaptable_costs_evaluator, AdaptableCostsEvaluatorWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: String.to_integer(System.get_env("APP_PORT", "4000"))],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,

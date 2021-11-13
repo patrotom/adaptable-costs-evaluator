@@ -7,20 +7,35 @@
 # General application configuration
 use Mix.Config
 
+app_host = System.get_env("APP_HOST", "localhost")
+
+secret_key_base =
+  System.get_env(
+    "SECRET_KEY_BASE",
+    "6S8t8+0bRbgle3xJDOvL2ZRQbXDYP18srFJeQJHq4z3D2mCAxS650ri7YpWUAa+L"
+  )
+
+guardian_issuer = System.get_env("GUARDIAN_ISSUER", "Adaptable Costs Evaluator")
+
+guardian_secret_key =
+  System.get_env(
+    "GUARDIAN_SECRET_KEY",
+    "EvlG5TLClHAO42bTKoeAKVE4H7A8TRCmKMuEQMmaNKg78/4z2ECEN5V5+4zVus+K"
+  )
+
 config :adaptable_costs_evaluator,
   ecto_repos: [AdaptableCostsEvaluator.Repo]
 
 # Configures the endpoint
 config :adaptable_costs_evaluator, AdaptableCostsEvaluatorWeb.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "6S8t8+0bRbgle3xJDOvL2ZRQbXDYP18srFJeQJHq4z3D2mCAxS650ri7YpWUAa+L",
-  render_errors: [view: AdaptableCostsEvaluatorWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: AdaptableCostsEvaluator.PubSub,
-  live_view: [signing_salt: "4rHMT12z"]
+  url: [host: app_host],
+  secret_key_base: secret_key_base,
+  render_errors: [view: AdaptableCostsEvaluatorWeb.ErrorView, accepts: ~w(json), layout: false],
+  pubsub_server: AdaptableCostsEvaluator.PubSub
 
 config :adaptable_costs_evaluator, AdaptableCostsEvaluator.Guardian,
-  issuer: "Adaptable Costs Evaluator",
-  secret_key: "EvlG5TLClHAO42bTKoeAKVE4H7A8TRCmKMuEQMmaNKg78/4z2ECEN5V5+4zVus+K"
+  issuer: guardian_issuer,
+  secret_key: guardian_secret_key
 
 # Configures Elixir's Logger
 config :logger, :console,
