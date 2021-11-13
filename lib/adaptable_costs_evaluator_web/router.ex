@@ -23,6 +23,7 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
 
     # Users
     resources "/users", UserController, except: [:create, :new, :edit]
+    get "/users/:id/organizations", UserController, :organizations
 
     # Organizations
     resources "/organizations", OrganizationController, except: [:new, :edit]
