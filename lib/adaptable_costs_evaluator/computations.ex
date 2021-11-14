@@ -56,7 +56,7 @@ defmodule AdaptableCostsEvaluator.Computations do
     attrs = Map.put(attrs, "creator_id", user.id)
 
     %Computation{}
-    |> Computation.changeset(attrs)
+    |> change_computation(attrs)
     |> Repo.insert()
   end
 
@@ -64,7 +64,7 @@ defmodule AdaptableCostsEvaluator.Computations do
     organization = Organizations.get_organization!(organization_id)
 
     computation
-    |> Computation.changeset(%{organization_id: organization.id})
+    |> change_computation(%{organization_id: organization.id})
     |> Repo.update()
   end
 
@@ -84,7 +84,7 @@ defmodule AdaptableCostsEvaluator.Computations do
     attrs = %{name: Map.get(attrs, "name")}
 
     computation
-    |> Computation.changeset(attrs)
+    |> change_computation(attrs)
     |> Repo.update()
   end
 
@@ -106,7 +106,7 @@ defmodule AdaptableCostsEvaluator.Computations do
       ) do
     if fo do
       computation
-      |> Computation.changeset(%{organization_id: nil})
+      |> change_computation(%{organization_id: nil})
       |> Repo.update()
     else
       Repo.delete(computation)

@@ -4,18 +4,14 @@ defmodule AdaptableCostsEvaluator.Outputs.Output do
 
   alias AdaptableCostsEvaluator.Validators.{FieldValueValidator, LabelValidator}
 
-  alias AdaptableCostsEvaluator.Computations.Computation
-  alias AdaptableCostsEvaluator.FieldSchemas.FieldSchema
-  alias AdaptableCostsEvaluator.Formulas.Formula
-
   schema "outputs" do
     field :label, :string
     field :last_value, AdaptableCostsEvaluator.Types.JSONB
     field :name, :string
 
-    belongs_to :computation, Computation
-    belongs_to :field_schema, FieldSchema
-    belongs_to :formula, Formula
+    belongs_to :computation, AdaptableCostsEvaluator.Computations.Computation
+    belongs_to :field_schema, AdaptableCostsEvaluator.FieldSchemas.FieldSchema
+    belongs_to :formula, AdaptableCostsEvaluator.Formulas.Formula
 
     timestamps()
   end

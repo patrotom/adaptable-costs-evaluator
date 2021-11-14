@@ -2,9 +2,6 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias AdaptableCostsEvaluator.Computations.Computation
-  alias AdaptableCostsEvaluator.Outputs.Output
-  alias AdaptableCostsEvaluator.Evaluators.Evaluator
   alias AdaptableCostsEvaluator.Validators.LabelValidator
 
   schema "formulas" do
@@ -12,9 +9,9 @@ defmodule AdaptableCostsEvaluator.Formulas.Formula do
     field :label, :string
     field :name, :string
 
-    belongs_to :computation, Computation
-    belongs_to :evaluator, Evaluator
-    has_many :outputs, Output
+    belongs_to :computation, AdaptableCostsEvaluator.Computations.Computation
+    belongs_to :evaluator, AdaptableCostsEvaluator.Evaluators.Evaluator
+    has_many :outputs, AdaptableCostsEvaluator.Outputs.Output
 
     timestamps()
   end

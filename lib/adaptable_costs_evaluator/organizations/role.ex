@@ -2,12 +2,10 @@ defmodule AdaptableCostsEvaluator.Organizations.Role do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias AdaptableCostsEvaluator.Organizations.Membership
-
   schema "roles" do
     field :type, Ecto.Enum, values: [:regular, :maintainer, :owner]
 
-    belongs_to :membership, Membership
+    belongs_to :membership, AdaptableCostsEvaluator.Organizations.Membership
 
     timestamps()
   end
@@ -20,5 +18,6 @@ defmodule AdaptableCostsEvaluator.Organizations.Role do
     |> unique_constraint([:type, :membership_id])
   end
 
-  defdelegate authorize(action, user, params), to: AdaptableCostsEvaluator.Policies.Organizations.RolePolicy
+  defdelegate authorize(action, user, params),
+    to: AdaptableCostsEvaluator.Policies.Organizations.RolePolicy
 end

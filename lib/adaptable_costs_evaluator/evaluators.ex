@@ -51,7 +51,7 @@ defmodule AdaptableCostsEvaluator.Evaluators do
   """
   def create_evaluator(attrs \\ %{}) do
     %Evaluator{}
-    |> Evaluator.changeset(attrs)
+    |> change_evaluator(attrs)
     |> Repo.insert()
   end
 
@@ -69,7 +69,7 @@ defmodule AdaptableCostsEvaluator.Evaluators do
   """
   def update_evaluator(%Evaluator{} = evaluator, attrs) do
     evaluator
-    |> Evaluator.changeset(attrs)
+    |> change_evaluator(attrs)
     |> Repo.update()
   end
 

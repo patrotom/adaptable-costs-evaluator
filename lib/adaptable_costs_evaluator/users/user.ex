@@ -2,9 +2,7 @@ defmodule AdaptableCostsEvaluator.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias AdaptableCostsEvaluator.Users.Credential
   alias AdaptableCostsEvaluator.Organizations.{Organization, Membership}
-  alias AdaptableCostsEvaluator.Computations.Computation
 
   schema "users" do
     field :first_name, :string
@@ -13,9 +11,12 @@ defmodule AdaptableCostsEvaluator.Users.User do
     field :admin, :boolean
     field :token, :string, virtual: true
 
-    has_one :credential, Credential
+    has_one :credential, AdaptableCostsEvaluator.Users.Credential
     has_many :memberships, Membership
-    has_many :computations, Computation, foreign_key: :creator_id
+
+    has_many :computations, AdaptableCostsEvaluator.Computations.Computation,
+      foreign_key: :creator_id
+
     many_to_many :organizations, Organization, join_through: "memberships"
 
     timestamps()
@@ -26,12 +27,11 @@ defmodule AdaptableCostsEvaluator.Users.User do
     user
     |> cast(attrs, [:first_name, :middle_name, :last_name, :admin])
     |> validate_required([:first_name, :last_name])
-    |> validate_length(:first_name, min: 1)
     |> validate_length(:first_name, max: 50)
     |> validate_length(:middle_name, max: 50)
-    |> validate_length(:last_name, min: 1)
     |> validate_length(:last_name, max: 50)
   end
 
-  defdelegate authorize(action, user, params), to: AdaptableCostsEvaluator.Policies.Users.UserPolicy
+  defdelegate authorize(action, user, params),
+    to: AdaptableCostsEvaluator.Policies.Users.UserPolicy
 end

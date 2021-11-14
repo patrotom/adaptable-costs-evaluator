@@ -53,7 +53,7 @@ defmodule AdaptableCostsEvaluator.Organizations do
   """
   def create_organization(attrs \\ %{}) do
     %Organization{}
-    |> Organization.changeset(attrs)
+    |> change_organization(attrs)
     |> Repo.insert()
   end
 
@@ -71,7 +71,7 @@ defmodule AdaptableCostsEvaluator.Organizations do
   """
   def update_organization(%Organization{} = organization, attrs) do
     organization
-    |> Organization.changeset(attrs)
+    |> change_organization(attrs)
     |> Repo.update()
   end
 
@@ -110,8 +110,10 @@ defmodule AdaptableCostsEvaluator.Organizations do
   end
 
   def get_membership!(organization_id, user_id) do
-    Repo.get_by!(Membership, organization_id: organization_id,
-                             user_id: user_id)
+    Repo.get_by!(Membership,
+      organization_id: organization_id,
+      user_id: user_id
+    )
   end
 
   def create_membership(organization_id, user_id) do
@@ -125,15 +127,23 @@ defmodule AdaptableCostsEvaluator.Organizations do
     }
 
     %Membership{}
-    |> Membership.changeset(attrs)
+    |> change_membership(attrs)
     |> Ecto.Changeset.cast_assoc(:roles, with: &Role.changeset/2)
     |> Repo.insert()
   end
 
   def delete_membership(organization_id, user_id) do
-    membership = Repo.get_by!(Membership, organization_id: organization_id,
-                                          user_id: user_id)
+    membership =
+      Repo.get_by!(Membership,
+        organization_id: organization_id,
+        user_id: user_id
+      )
+
     Repo.delete(membership)
+  end
+
+  def change_membership(%Membership{} = membership, attrs \\ %{}) do
+    Membership.changeset(membership, attrs)
   end
 
   def colleagues?(%User{} = first_user, %User{} = second_user) do
@@ -151,8 +161,11 @@ defmodule AdaptableCostsEvaluator.Organizations do
   end
 
   def list_roles(organization_id, user_id) do
-    membership = Repo.get_by(Membership, organization_id: organization_id,
-                                         user_id: user_id)
+    membership =
+      Repo.get_by(Membership,
+        organization_id: organization_id,
+        user_id: user_id
+      )
 
     if membership == nil do
       []
@@ -173,7 +186,7 @@ defmodule AdaptableCostsEvaluator.Organizations do
   def delete_role(role_type, organization_id, user_id) do
     membership =
       get_membership!(organization_id, user_id)
-      |> Repo.preload([roles: from(r in Role, where: r.type == ^role_type)])
+      |> Repo.preload(roles: from(r in Role, where: r.type == ^role_type))
 
     role = List.first(membership.roles)
 

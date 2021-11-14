@@ -51,7 +51,7 @@ defmodule AdaptableCostsEvaluator.FieldSchemas do
   """
   def create_field_schema(attrs \\ %{}) do
     %FieldSchema{}
-    |> FieldSchema.changeset(attrs)
+    |> change_field_schema(attrs)
     |> Repo.insert()
   end
 
@@ -69,7 +69,7 @@ defmodule AdaptableCostsEvaluator.FieldSchemas do
   """
   def update_field_schema(%FieldSchema{} = field_schema, attrs) do
     field_schema
-    |> FieldSchema.changeset(attrs)
+    |> change_field_schema(attrs)
     |> Repo.update()
   end
 

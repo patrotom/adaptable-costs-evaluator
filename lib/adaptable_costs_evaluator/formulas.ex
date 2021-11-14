@@ -55,7 +55,7 @@ defmodule AdaptableCostsEvaluator.Formulas do
   """
   def create_formula(attrs \\ %{}) do
     %Formula{}
-    |> Formula.changeset(attrs)
+    |> change_formula(attrs)
     |> Repo.insert()
   end
 
@@ -73,7 +73,7 @@ defmodule AdaptableCostsEvaluator.Formulas do
   """
   def update_formula(%Formula{} = formula, attrs) do
     formula
-    |> Formula.changeset(attrs)
+    |> change_formula(attrs)
     |> Repo.update()
   end
 
@@ -118,10 +118,13 @@ defmodule AdaptableCostsEvaluator.Formulas do
       {:ok, value} ->
         attrs = %{
           outputs: apply_result_to_outputs(formula, value),
-          result: value,
+          result: value
         }
+
         {:ok, attrs}
-      {:error, error} -> {:error, {:unprocessable_entity, [error]}}
+
+      {:error, error} ->
+        {:error, {:unprocessable_entity, [error]}}
     end
   end
 
