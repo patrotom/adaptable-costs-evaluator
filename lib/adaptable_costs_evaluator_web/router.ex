@@ -50,9 +50,18 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
       # Outputs
       resources "/outputs", OutputController, except: [:new, :edit]
     end
-    get "/organizations/:organization_id/computations", ComputationController, :index, as: :organization_computation
-    post "/organizations/:organization_id/computations/:computation_id", ComputationController, :create
-    delete "/organizations/:organization_id/computations/:computation_id", ComputationController, :delete
+
+    get "/organizations/:organization_id/computations", ComputationController, :index,
+      as: :organization_computation
+
+    post "/organizations/:organization_id/computations/:computation_id",
+         ComputationController,
+         :create
+
+    delete "/organizations/:organization_id/computations/:computation_id",
+           ComputationController,
+           :delete
+
     get "/users/:creator_id/computations", ComputationController, :index, as: :user_computation
 
     # Field Schemas

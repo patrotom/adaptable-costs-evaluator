@@ -11,8 +11,6 @@ defmodule AdaptableCostsEvaluatorWeb.FieldSchemaView do
   end
 
   def render("field_schema.json", %{field_schema: field_schema}) do
-    %{id: field_schema.id,
-      name: field_schema.name,
-      definition: field_schema.definition}
+    %{id: field_schema.id, name: field_schema.name, definition: field_schema.definition}
   end
 end

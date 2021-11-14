@@ -45,7 +45,7 @@ defmodule AdaptableCostsEvaluator.Fixtures.FormulaFixture do
 
         %{
           "result" => result,
-          "affected_outputs" => %{"data" => affected_outputs},
+          "affected_outputs" => %{"data" => affected_outputs}
         }
       end
 

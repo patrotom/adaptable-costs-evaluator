@@ -32,7 +32,7 @@ defmodule AdaptableCostsEvaluator.Fixtures.EvaluatorFixture do
           "id" => evaluator.id,
           "name" => evaluator.name,
           "description" => evaluator.description,
-          "module" => evaluator.module,
+          "module" => evaluator.module
         }
       end
     end

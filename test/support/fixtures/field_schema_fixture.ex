@@ -23,7 +23,7 @@ defmodule AdaptableCostsEvaluator.Fixtures.FieldSchemaFixture do
         %{
           "id" => field_schema.id,
           "name" => field_schema.name,
-          "definition" => field_schema.definition,
+          "definition" => field_schema.definition
         }
       end
     end
