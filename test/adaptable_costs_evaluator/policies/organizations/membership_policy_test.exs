@@ -21,14 +21,23 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicyTest do
   describe "authorize/3 with delete action" do
     test "authorizes regular if it is their membership and an executive role", context do
       params = %{"user_id" => context[:user1].id, "organization_id" => context[:organization].id}
-      Organizations.create_role(context[:organization].id, context[:user2].id, %{"type" => "maintainer"})
+
+      Organizations.create_role(context[:organization].id, context[:user2].id, %{
+        "type" => "maintainer"
+      })
 
       assert authorize(:delete, context[:user1], params) == true
     end
 
     test "does not authorize maintainer if the user is owner", context do
-      Organizations.create_role(context[:organization].id, context[:user1].id, %{"type" => "owner"})
-      Organizations.create_role(context[:organization].id, context[:user2].id, %{"type" => "maintainer"})
+      Organizations.create_role(context[:organization].id, context[:user1].id, %{
+        "type" => "owner"
+      })
+
+      Organizations.create_role(context[:organization].id, context[:user2].id, %{
+        "type" => "maintainer"
+      })
+
       params = %{"user_id" => context[:user1].id, "organization_id" => context[:organization].id}
 
       assert authorize(:delete, context[:user2], params) == false
@@ -37,7 +46,9 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicyTest do
 
   describe "authorize/3 with create actions" do
     test "authorizes an executive role of the organization", context do
-      Organizations.create_role(context[:organization].id, context[:user1].id, %{"type" => "maintainer"})
+      Organizations.create_role(context[:organization].id, context[:user1].id, %{
+        "type" => "maintainer"
+      })
 
       assert authorize(:create, context[:user1], context[:organization].id) == true
     end

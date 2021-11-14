@@ -11,9 +11,11 @@ defmodule AdaptableCostsEvaluatorWeb.EvaluatorView do
   end
 
   def render("evaluator.json", %{evaluator: evaluator}) do
-    %{id: evaluator.id,
+    %{
+      id: evaluator.id,
       name: evaluator.name,
       description: evaluator.description,
-      module: evaluator.module}
+      module: evaluator.module
+    }
   end
 end

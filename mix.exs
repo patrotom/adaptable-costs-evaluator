@@ -49,7 +49,8 @@ defmodule AdaptableCostsEvaluator.MixProject do
       {:guardian, "~> 2.2"},
       {:bodyguard, "~> 2.4"},
       {:abacus, "~> 2.0"},
-      {:ex_json_schema, "~> 0.9.1"}
+      {:ex_json_schema, "~> 0.9.1"},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end
 

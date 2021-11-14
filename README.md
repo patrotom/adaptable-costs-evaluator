@@ -1,4 +1,4 @@
-![test and lint](https://github.com/patrotom/iso-service/actions/workflows/test.yml/badge.svg)
+![Tests & Static Code Analysis](https://github.com/patrotom/adaptable-costs-evaluator/actions/workflows/ci.yml/badge.svg)
 
 # Adaptable Costs Evaluator
 

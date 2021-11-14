@@ -14,8 +14,12 @@ defmodule AdaptableCostsEvaluator.Guardian do
   end
 
   def resource_from_claims(%{"sub" => id}) do
-    resource = Users.get_user!(id)
-    {:ok, resource}
+    try do
+      resource = Users.get_user!(id)
+      {:ok, resource}
+    rescue
+      Ecto.NoResultsError -> {:error, "sub of the token does not exist"}
+    end
   end
 
   def resource_from_claims(_) do

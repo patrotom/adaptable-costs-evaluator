@@ -43,9 +43,9 @@ defmodule AdaptableCostsEvaluator.OutputsTest do
         |> Map.put(:field_schema_id, output.field_schema_id)
 
       assert {:ok, %Output{} = output} = Outputs.create_output(attrs)
-      assert output.label == "custom"
-      assert output.last_value == nil
-      assert output.name == "some name"
+      assert output.label == attrs[:label]
+      assert output.last_value == attrs[:last_value]
+      assert output.name == attrs[:name]
     end
 
     test "create_output/1 with invalid data returns error changeset" do
@@ -54,9 +54,9 @@ defmodule AdaptableCostsEvaluator.OutputsTest do
 
     test "update_output/2 with valid data updates the output", %{output: output, computation: _} do
       assert {:ok, %Output{} = output} = Outputs.update_output(output, @update_output_attrs)
-      assert output.label == "some_updated_label"
-      assert output.last_value == nil
-      assert output.name == "some updated name"
+      assert output.label == @update_output_attrs[:label]
+      assert output.last_value == @update_output_attrs[:last_value]
+      assert output.name == @update_output_attrs[:name]
     end
 
     test "update_output/2 with invalid data returns error changeset", %{

@@ -2,14 +2,11 @@ defmodule AdaptableCostsEvaluator.Organizations.Membership do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias AdaptableCostsEvaluator.Organizations.{Organization, Role}
-  alias AdaptableCostsEvaluator.Users.User
-
   schema "memberships" do
-    belongs_to :organization, Organization
-    belongs_to :user, User
+    belongs_to :organization, AdaptableCostsEvaluator.Organizations.Organization
+    belongs_to :user, AdaptableCostsEvaluator.Users.User
 
-    has_many :roles, Role
+    has_many :roles, AdaptableCostsEvaluator.Organizations.Role
 
     timestamps()
   end
@@ -22,5 +19,6 @@ defmodule AdaptableCostsEvaluator.Organizations.Membership do
     |> unique_constraint([:user_id, :organization_id])
   end
 
-  defdelegate authorize(action, user, params), to: AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicy
+  defdelegate authorize(action, user, params),
+    to: AdaptableCostsEvaluator.Policies.Organizations.MembershipPolicy
 end

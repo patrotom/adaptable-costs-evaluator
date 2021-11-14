@@ -11,11 +11,13 @@ defmodule AdaptableCostsEvaluatorWeb.UserView do
   end
 
   def render("user.json", %{user: user}) do
-    data = %{id: user.id,
-             first_name: user.first_name,
-             middle_name: user.middle_name,
-             last_name: user.last_name,
-             email: user.credential.email}
+    data = %{
+      id: user.id,
+      first_name: user.first_name,
+      middle_name: user.middle_name,
+      last_name: user.last_name,
+      email: user.credential.email
+    }
 
     if user.token != nil, do: Map.put(data, :token, user.token), else: data
   end

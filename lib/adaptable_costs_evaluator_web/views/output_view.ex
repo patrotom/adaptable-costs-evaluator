@@ -11,11 +11,13 @@ defmodule AdaptableCostsEvaluatorWeb.OutputView do
   end
 
   def render("output.json", %{output: output}) do
-    %{id: output.id,
+    %{
+      id: output.id,
       name: output.name,
       label: output.label,
       last_value: output.last_value,
       field_schema_id: output.field_schema_id,
-      formula_id: output.formula_id}
+      formula_id: output.formula_id
+    }
   end
 end

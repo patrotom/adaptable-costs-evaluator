@@ -26,11 +26,12 @@ defmodule AdaptableCostsEvaluator.FieldSchemasTest do
 
       assert {:ok, %FieldSchema{} = field_schema} = FieldSchemas.create_field_schema(attrs)
       assert field_schema.definition == %{}
-      assert field_schema.name == "custom name"
+      assert field_schema.name == attrs[:name]
     end
 
     test "create_field_schema/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = FieldSchemas.create_field_schema(@invalid_field_schema_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               FieldSchemas.create_field_schema(@invalid_field_schema_attrs)
     end
 
     test "update_field_schema/2 with valid data updates the field_schema", %{
@@ -40,13 +41,12 @@ defmodule AdaptableCostsEvaluator.FieldSchemasTest do
                FieldSchemas.update_field_schema(field_schema, @update_field_schema_attrs)
 
       assert field_schema.definition == %{}
-      assert field_schema.name == "some updated name"
+      assert field_schema.name == @update_field_schema_attrs[:name]
     end
 
     test "update_field_schema/2 with invalid data returns error changeset", %{
       field_schema: field_schema
     } do
-
       assert {:error, %Ecto.Changeset{}} =
                FieldSchemas.update_field_schema(field_schema, @invalid_field_schema_attrs)
 

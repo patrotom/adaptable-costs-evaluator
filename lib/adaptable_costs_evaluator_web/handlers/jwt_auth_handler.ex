@@ -3,9 +3,9 @@ defmodule AdaptableCostsEvaluatorWeb.Handlers.JWTAuthHandler do
 
   alias AdaptableCostsEvaluatorWeb.ErrorView
 
-  def auth_error(conn, {type, _reason}, _opts) do
+  def auth_error(conn, {_type, reason}, _opts) do
     body =
-      ErrorView.render("401.json", %{errors: [to_string(type)]})
+      ErrorView.render("401.json", %{errors: [to_string(reason)]})
       |> Jason.encode!()
 
     conn

@@ -54,7 +54,7 @@ defmodule AdaptableCostsEvaluator.Outputs do
   """
   def create_output(attrs \\ %{}) do
     %Output{}
-    |> Output.changeset(attrs)
+    |> change_output(attrs)
     |> Repo.insert()
   end
 
@@ -72,7 +72,7 @@ defmodule AdaptableCostsEvaluator.Outputs do
   """
   def update_output(%Output{} = output, attrs) do
     output
-    |> Output.changeset(attrs)
+    |> change_output(attrs)
     |> Repo.update()
   end
 

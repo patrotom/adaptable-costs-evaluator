@@ -2,16 +2,15 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.OrganizationPolicy do
   use AdaptableCostsEvaluator.Policies.BasePolicy
 
   alias AdaptableCostsEvaluator.Users.User
-  alias AdaptableCostsEvaluator.Users
+  alias AdaptableCostsEvaluator.{Users, Organizations}
 
   @behaviour Bodyguard.Policy
 
   def authorize(:read, %User{} = user, organization_id) do
-    Users.has_role?(:regular, user.id, organization_id) ||
-      executive?(user.id, organization_id)
+    Organizations.list_roles(organization_id, user.id) != []
   end
 
-  def authorize(:create, %User{}, _params), do: true
+  def authorize(:create, %User{}, _), do: true
 
   def authorize(:update, %User{} = user, organization_id) do
     executive?(user.id, organization_id)

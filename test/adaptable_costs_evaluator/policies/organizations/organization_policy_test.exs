@@ -38,6 +38,7 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.OrganizationPolicyTest 
         context[:user].id,
         %{"type" => "maintainer"}
       )
+
       assert authorize(:update, context[:user], context[:organization].id) == true
     end
 
@@ -47,6 +48,7 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.OrganizationPolicyTest 
         context[:user].id,
         %{"type" => "owner"}
       )
+
       assert authorize(:update, context[:user], context[:organization].id) == true
     end
   end
@@ -62,6 +64,7 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.OrganizationPolicyTest 
         context[:user].id,
         %{"type" => "maintainer"}
       )
+
       assert authorize(:delete, context[:user], context[:organization].id) == false
     end
 
@@ -71,6 +74,7 @@ defmodule AdaptableCostsEvaluator.Policies.Organizations.OrganizationPolicyTest 
         context[:user].id,
         %{"type" => "owner"}
       )
+
       assert authorize(:delete, context[:user], context[:organization].id) == true
     end
   end

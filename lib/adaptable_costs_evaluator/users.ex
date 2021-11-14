@@ -42,10 +42,8 @@ defmodule AdaptableCostsEvaluator.Users do
   end
 
   def get_user_by_email!(email) do
-    Repo.get_by!(Credential, email: email)
-    |> Repo.preload(:user)
-    |> then(fn credential -> credential.user.id end)
-    |> get_user!()
+    credential = Repo.get_by!(Credential, email: email)
+    Repo.preload(credential, :user).user |> Repo.preload(:credential)
   end
 
   @doc """
@@ -62,7 +60,7 @@ defmodule AdaptableCostsEvaluator.Users do
   """
   def create_user(attrs \\ %{}) do
     %User{}
-    |> User.changeset(attrs)
+    |> change_user(attrs)
     |> Ecto.Changeset.cast_assoc(:credential, with: &Credential.changeset/2)
     |> Repo.insert()
   end
@@ -80,15 +78,18 @@ defmodule AdaptableCostsEvaluator.Users do
 
   """
   def update_user(%User{} = user, attrs) do
-    credential_attrs = Map.get(attrs, "credential",
-                               Map.get(attrs, :credential, %{}))
+    credential_attrs = Map.get(attrs, "credential", Map.get(attrs, :credential, %{}))
     user_attrs = Map.drop(attrs, ["credential", :credential])
 
     Ecto.Multi.new()
-    |> Ecto.Multi.update(:credential,
-                         Credential.changeset(user.credential, credential_attrs))
-    |> Ecto.Multi.update(:user,
-                         User.changeset(user, user_attrs))
+    |> Ecto.Multi.update(
+      :credential,
+      Credential.changeset(user.credential, credential_attrs)
+    )
+    |> Ecto.Multi.update(
+      :user,
+      change_user(user, user_attrs)
+    )
     |> Repo.transaction()
     |> case do
       {:ok, result} -> {:ok, get_user!(result[:user].id)}
@@ -147,19 +148,23 @@ defmodule AdaptableCostsEvaluator.Users do
     case email_password_auth(email, password) do
       {:ok, user} ->
         Guardian.encode_and_sign(user)
+
       _ ->
         {:error, :unauthorized}
     end
   end
 
   defp email_password_auth(email, password) when is_binary(email) and is_binary(password) do
-    credential = try do
-      get_user_by_email!(email).credential
-    rescue
-      Ecto.NoResultsError -> nil
-    end
+    credential =
+      try do
+        get_user_by_email!(email).credential
+      rescue
+        Ecto.NoResultsError -> nil
+      end
 
-    if credential == nil, do: {:error, :sign_in_error}, else: verify_password(password, credential)
+    if credential == nil,
+      do: {:error, :sign_in_error},
+      else: verify_password(password, credential)
   end
 
   defp verify_password(password, %Credential{} = credential) when is_binary(password) do

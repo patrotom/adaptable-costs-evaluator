@@ -24,6 +24,7 @@ defmodule AdaptableCostsEvaluator.Evaluators.Evaluator do
     |> cast(attrs, [:name, :description, :module])
     |> validate_required([:name, :module])
     |> unique_constraint(:name)
+    |> validate_length(:description, max: 2000)
     |> validate_module()
   end
 

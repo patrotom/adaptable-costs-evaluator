@@ -27,6 +27,7 @@ defmodule AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluatorTest
         label: "input1",
         field_schema_id: field_schema.id
       }
+
       input_fixture(attrs)
 
       %{formula: formula}

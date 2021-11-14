@@ -14,7 +14,7 @@ defmodule AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluator do
     invalid_inputs = filter_invalid_inputs(inputs)
 
     if invalid_inputs != [] do
-      invalid_inputs = Enum.map(invalid_inputs, fn i -> "'#{i}'"end)
+      invalid_inputs = Enum.map(invalid_inputs, fn i -> "'#{i}'" end)
       {:error, "Invalid inputs: #{Enum.join(invalid_inputs, ", ")}"}
     else
       inputs = inputs_to_values(inputs)

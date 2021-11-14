@@ -2,7 +2,7 @@ defmodule AdaptableCostsEvaluatorWeb.OrganizationControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
   use AdaptableCostsEvaluator.Fixtures.{UserFixture, OrganizationFixture}
 
-  alias AdaptableCostsEvaluator.{Repo, Organizations}
+  alias AdaptableCostsEvaluator.{Repo, Organizations, Users}
   alias AdaptableCostsEvaluator.Organizations.Organization
 
   import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_authd_conn: 2]
@@ -21,17 +21,28 @@ defmodule AdaptableCostsEvaluatorWeb.OrganizationControllerTest do
 
   describe "create organization" do
     test "renders organization when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.organization_path(conn, :create), organization: @valid_organization_attrs)
+      conn =
+        post(conn, Routes.organization_path(conn, :create),
+          organization: @valid_organization_attrs
+        )
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.organization_path(conn, :show, id))
       organization = Organizations.get_organization!(id)
+      owner = Organizations.list_users(organization.id) |> List.first()
 
       assert json_response(conn, 200)["data"] == organization_response(organization)
+      assert owner != nil
+      assert Users.has_role?(:owner, owner.id, organization.id) == true
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.organization_path(conn, :create), organization: @invalid_organization_attrs)
+      conn =
+        post(conn, Routes.organization_path(conn, :create),
+          organization: @invalid_organization_attrs
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -39,8 +50,15 @@ defmodule AdaptableCostsEvaluatorWeb.OrganizationControllerTest do
   describe "update organization" do
     setup [:create_organization]
 
-    test "renders organization when data is valid", %{conn: conn, organization: %Organization{id: id} = organization} do
-      conn = put(conn, Routes.organization_path(conn, :update, organization), organization: @update_organization_attrs)
+    test "renders organization when data is valid", %{
+      conn: conn,
+      organization: %Organization{id: id} = organization
+    } do
+      conn =
+        put(conn, Routes.organization_path(conn, :update, organization),
+          organization: @update_organization_attrs
+        )
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.organization_path(conn, :show, id))
@@ -50,7 +68,11 @@ defmodule AdaptableCostsEvaluatorWeb.OrganizationControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, organization: organization} do
-      conn = put(conn, Routes.organization_path(conn, :update, organization), organization: @invalid_organization_attrs)
+      conn =
+        put(conn, Routes.organization_path(conn, :update, organization),
+          organization: @invalid_organization_attrs
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end

@@ -7,7 +7,7 @@ defmodule AdaptableCostsEvaluatorWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_adaptable_costs_evaluator_key",
-    signing_salt: "09M7jx8u"
+    signing_salt: System.get_env("SESSION_SIGNING_SALT", "09M7jx8u")
   ]
 
   socket "/socket", AdaptableCostsEvaluatorWeb.UserSocket,

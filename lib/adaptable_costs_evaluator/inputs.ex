@@ -58,7 +58,7 @@ defmodule AdaptableCostsEvaluator.Inputs do
   """
   def create_input(attrs \\ %{}) do
     %Input{}
-    |> Input.changeset(attrs)
+    |> change_input(attrs)
     |> Repo.insert()
   end
 
@@ -76,7 +76,7 @@ defmodule AdaptableCostsEvaluator.Inputs do
   """
   def update_input(%Input{} = input, attrs) do
     input
-    |> Input.changeset(attrs)
+    |> change_input(attrs)
     |> Repo.update()
   end
 

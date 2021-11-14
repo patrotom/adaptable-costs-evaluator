@@ -45,13 +45,13 @@ defmodule AdaptableCostsEvaluator.Fixtures.UserFixture do
       end
 
       def user_response(%User{} = user) do
-         %{
+        %{
           "id" => user.id,
           "first_name" => user.first_name,
           "middle_name" => user.middle_name,
           "last_name" => user.last_name,
           "email" => user.credential.email
-         }
+        }
       end
     end
   end

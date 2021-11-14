@@ -1,9 +1,12 @@
 defmodule AdaptableCostsEvaluator.InputsTest do
   use AdaptableCostsEvaluator.DataCase
-  use AdaptableCostsEvaluator.Fixtures.{UserFixture,
-                                        ComputationFixture,
-                                        InputFixture,
-                                        FieldSchemaFixture}
+
+  use AdaptableCostsEvaluator.Fixtures.{
+    UserFixture,
+    ComputationFixture,
+    InputFixture,
+    FieldSchemaFixture
+  }
 
   alias AdaptableCostsEvaluator.Inputs
 
@@ -14,9 +17,7 @@ defmodule AdaptableCostsEvaluator.InputsTest do
       user = user_fixture()
       computation = computation_fixture(user)
       field_schema = field_schema_fixture()
-      input = input_fixture(
-        %{computation_id: computation.id, field_schema_id: field_schema.id}
-      )
+      input = input_fixture(%{computation_id: computation.id, field_schema_id: field_schema.id})
 
       %{input: input, computation: computation}
     end
@@ -29,16 +30,19 @@ defmodule AdaptableCostsEvaluator.InputsTest do
       assert Inputs.get_input!(input.id, computation) == input
     end
 
-    test "create_input/1 with valid data creates a input", %{input: input, computation: computation} do
+    test "create_input/1 with valid data creates a input", %{
+      input: input,
+      computation: computation
+    } do
       attrs =
         %{@valid_input_attrs | label: "custom"}
         |> Map.put(:computation_id, computation.id)
-        |> Map.put(:field_schema_id, input.field_schema_id )
+        |> Map.put(:field_schema_id, input.field_schema_id)
 
       assert {:ok, %Input{} = input} = Inputs.create_input(attrs)
-      assert input.label == "custom"
-      assert input.last_value == nil
-      assert input.name == "some name"
+      assert input.label == attrs[:label]
+      assert input.last_value == attrs[:last_value]
+      assert input.name == attrs[:name]
     end
 
     test "create_input/1 with invalid data returns error changeset" do
@@ -47,12 +51,15 @@ defmodule AdaptableCostsEvaluator.InputsTest do
 
     test "update_input/2 with valid data updates the input", %{input: input, computation: _} do
       assert {:ok, %Input{} = input} = Inputs.update_input(input, @update_input_attrs)
-      assert input.label == "some_updated_label"
-      assert input.last_value == nil
-      assert input.name == "some updated name"
+      assert input.label == @update_input_attrs[:label]
+      assert input.last_value == @update_input_attrs[:last_value]
+      assert input.name == @update_input_attrs[:name]
     end
 
-    test "update_input/2 with invalid data returns error changeset", %{input: input, computation: computation} do
+    test "update_input/2 with invalid data returns error changeset", %{
+      input: input,
+      computation: computation
+    } do
       assert {:error, %Ecto.Changeset{}} = Inputs.update_input(input, @invalid_input_attrs)
       assert input == Inputs.get_input!(input.id, computation)
     end

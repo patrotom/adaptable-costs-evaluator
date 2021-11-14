@@ -1,17 +1,22 @@
 defmodule AdaptableCostsEvaluatorWeb.RoleControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
 
-  use AdaptableCostsEvaluator.Fixtures.{UserFixture,
-                                        OrganizationFixture,
-                                        MembershipFixture,
-                                        RoleFixture}
+  use AdaptableCostsEvaluator.Fixtures.{
+    UserFixture,
+    OrganizationFixture,
+    MembershipFixture,
+    RoleFixture
+  }
 
   import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_authd_conn: 2]
 
   setup %{conn: conn} do
     user = user_fixture(admin: true)
     organization = organization_fixture()
-    role = membership_fixture(organization.id, user.id) |> then(fn m -> m.roles end) |> List.first()
+
+    role =
+      membership_fixture(organization.id, user.id) |> then(fn m -> m.roles end) |> List.first()
+
     {:ok, conn: conn} = setup_authd_conn(user, conn)
     %{conn: conn, user: user, organization: organization, role: role}
   end
@@ -48,7 +53,11 @@ defmodule AdaptableCostsEvaluatorWeb.RoleControllerTest do
       organization: organization,
       role: role
     } do
-      conn = delete(conn, Routes.role_path(conn, :delete, organization.id, user.id), role: role_response(role))
+      conn =
+        delete(conn, Routes.role_path(conn, :delete, organization.id, user.id),
+          role: role_response(role)
+        )
+
       assert response(conn, 204)
     end
   end

@@ -145,7 +145,12 @@ defmodule AdaptableCostsEvaluatorWeb.FormulaControllerTest do
       conn =
         post(
           context[:conn],
-          Routes.computation_formula_path(context[:conn], :evaluate, context[:computation].id, context[:formula].id)
+          Routes.computation_formula_path(
+            context[:conn],
+            :evaluate,
+            context[:computation].id,
+            context[:formula].id
+          )
         )
 
       assert json_response(conn, 200)["data"] == evaluate_formula_response(context[:formula], 35)

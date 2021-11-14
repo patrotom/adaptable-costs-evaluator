@@ -11,10 +11,12 @@ defmodule AdaptableCostsEvaluatorWeb.InputView do
   end
 
   def render("input.json", %{input: input}) do
-    %{id: input.id,
+    %{
+      id: input.id,
       name: input.name,
       label: input.label,
       last_value: input.last_value,
-      field_schema_id: input.field_schema_id}
+      field_schema_id: input.field_schema_id
+    }
   end
 end

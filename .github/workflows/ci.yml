@@ -1,4 +1,4 @@
-name: Tests
+name: Tests & Static Code Analysis
 
 on:
   push:
@@ -25,10 +25,23 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - uses: actions/checkout@v2
-      - uses: erlef/setup-beam@v1
+      - name: Check Out Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Beam
+        uses: erlef/setup-beam@v1
         with:
           otp-version: ${{matrix.otp}}
           elixir-version: ${{matrix.elixir}}
-      - run: mix deps.get
-      - run: mix test
+
+      - name: Install Dependencies
+        run: mix deps.get
+
+      - name: Run Tests
+        run: mix test
+
+      - name: Check Formatting
+        run: mix format --check-formatted
+
+      - name: Typecheck With Dialyzer
+        run: mix dialyzer

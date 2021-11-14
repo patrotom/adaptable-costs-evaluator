@@ -56,6 +56,7 @@ defmodule AdaptableCostsEvaluatorWeb.UserController do
       {:ok, token, _claims} ->
         conn
         |> render("token.json", token: token)
+
       _ ->
         {:error, :unauthorized}
     end

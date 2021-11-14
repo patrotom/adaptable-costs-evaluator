@@ -2,21 +2,15 @@ defmodule AdaptableCostsEvaluator.Computations.Computation do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias AdaptableCostsEvaluator.Users.User
-  alias AdaptableCostsEvaluator.Organizations.Organization
-  alias AdaptableCostsEvaluator.Formulas.Formula
-  alias AdaptableCostsEvaluator.Inputs.Input
-  alias AdaptableCostsEvaluator.Outputs.Output
-
   schema "computations" do
     field :name, :string
 
-    belongs_to :user, User, foreign_key: :creator_id
-    belongs_to :organization, Organization
+    belongs_to :user, AdaptableCostsEvaluator.Users.User, foreign_key: :creator_id
+    belongs_to :organization, AdaptableCostsEvaluator.Organizations.Organization
 
-    has_many :formulas, Formula
-    has_many :inputs, Input
-    has_many :outputs, Output
+    has_many :formulas, AdaptableCostsEvaluator.Formulas.Formula
+    has_many :inputs, AdaptableCostsEvaluator.Inputs.Input
+    has_many :outputs, AdaptableCostsEvaluator.Outputs.Output
 
     timestamps()
   end

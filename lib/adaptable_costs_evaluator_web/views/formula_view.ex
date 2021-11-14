@@ -25,7 +25,7 @@ defmodule AdaptableCostsEvaluatorWeb.FormulaView do
     %{
       data: %{
         result: result,
-        affected_outputs: OutputView.render("index.json", outputs: outputs),
+        affected_outputs: OutputView.render("index.json", outputs: outputs)
       }
     }
   end

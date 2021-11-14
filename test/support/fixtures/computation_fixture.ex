@@ -23,7 +23,7 @@ defmodule AdaptableCostsEvaluator.Fixtures.ComputationFixture do
           "id" => computation.id,
           "name" => computation.name,
           "creator_id" => computation.creator_id,
-          "organization_id" => computation.organization_id,
+          "organization_id" => computation.organization_id
         }
       end
     end
