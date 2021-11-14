@@ -14,6 +14,7 @@ guardian_secret_key =
     "GUARDIAN_SECRET_KEY",
     "EvlG5TLClHAO42bTKoeAKVE4H7A8TRCmKMuEQMmaNKg78/4z2ECEN5V5+4zVus+K"
   )
+lv_signing_salt = System.get_env("LV_SIGNING_SALT", "Frd8eAcsHvOMrRbk")
 
 # Configure Ecto
 config :adaptable_costs_evaluator,
@@ -24,7 +25,8 @@ config :adaptable_costs_evaluator, AdaptableCostsEvaluatorWeb.Endpoint,
   url: [host: app_host],
   secret_key_base: secret_key_base,
   render_errors: [view: AdaptableCostsEvaluatorWeb.ErrorView, accepts: ~w(json), layout: false],
-  pubsub_server: AdaptableCostsEvaluator.PubSub
+  pubsub_server: AdaptableCostsEvaluator.PubSub,
+  live_view: [signing_salt: lv_signing_salt]
 
 # Configure Guardian
 config :adaptable_costs_evaluator, AdaptableCostsEvaluator.Guardian,

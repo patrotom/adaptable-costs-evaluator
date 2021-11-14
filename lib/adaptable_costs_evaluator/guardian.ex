@@ -18,7 +18,7 @@ defmodule AdaptableCostsEvaluator.Guardian do
       resource = Users.get_user!(id)
       {:ok, resource}
     rescue
-      Ecto.NoResultsError -> {:error, :forbidden}
+      Ecto.NoResultsError -> {:error, "sub of the token does not exist"}
     end
   end
 
