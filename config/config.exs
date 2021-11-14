@@ -1,38 +1,32 @@
-# This file is responsible for configuring your application
-# and its dependencies with the aid of the Mix.Config module.
-#
-# This configuration file is loaded before any dependency and
-# is restricted to this project.
-
 # General application configuration
 use Mix.Config
 
+# Environment variables
 app_host = System.get_env("APP_HOST", "localhost")
-
+guardian_issuer = System.get_env("GUARDIAN_ISSUER", "Adaptable Costs Evaluator")
 secret_key_base =
   System.get_env(
     "SECRET_KEY_BASE",
     "6S8t8+0bRbgle3xJDOvL2ZRQbXDYP18srFJeQJHq4z3D2mCAxS650ri7YpWUAa+L"
   )
-
-guardian_issuer = System.get_env("GUARDIAN_ISSUER", "Adaptable Costs Evaluator")
-
 guardian_secret_key =
   System.get_env(
     "GUARDIAN_SECRET_KEY",
     "EvlG5TLClHAO42bTKoeAKVE4H7A8TRCmKMuEQMmaNKg78/4z2ECEN5V5+4zVus+K"
   )
 
+# Configure Ecto
 config :adaptable_costs_evaluator,
   ecto_repos: [AdaptableCostsEvaluator.Repo]
 
-# Configures the endpoint
+# Configure the endpoint
 config :adaptable_costs_evaluator, AdaptableCostsEvaluatorWeb.Endpoint,
   url: [host: app_host],
   secret_key_base: secret_key_base,
   render_errors: [view: AdaptableCostsEvaluatorWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: AdaptableCostsEvaluator.PubSub
 
+# Configure Guardian
 config :adaptable_costs_evaluator, AdaptableCostsEvaluator.Guardian,
   issuer: guardian_issuer,
   secret_key: guardian_secret_key
@@ -45,7 +39,7 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-# Bodyguard
+# Configure Bodyguard
 config :bodyguard,
   default_error: :forbidden
 

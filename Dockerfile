@@ -12,8 +12,10 @@ RUN apt install --yes build-essential inotify-tools postgresql-client
 
 # Install Elixir packages
 RUN mix local.hex --force
+RUN mix local.rebar --force
 
-# Compile the project
+# Get the dependencies and compile the project
+RUN mix deps.get
 RUN mix do compile
 
 # Run the app

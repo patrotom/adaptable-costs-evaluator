@@ -1,0 +1,14 @@
+# Common
+.git
+.gitignore
+.env
+.github
+Dockerfile
+docker-compose.yml
+
+# Mix artifacts
+_build
+.elixir_ls
+cover
+deps
+*.ez
