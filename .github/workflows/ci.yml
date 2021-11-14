@@ -43,8 +43,5 @@ jobs:
       - name: Check Formatting
         run: mix format --check-formatted
 
-      - name: Review Code With Credo
-        run: mix credo
-
       - name: Typecheck With Dialyzer
         run: mix dialyzer
