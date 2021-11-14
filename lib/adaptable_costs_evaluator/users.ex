@@ -43,7 +43,7 @@ defmodule AdaptableCostsEvaluator.Users do
 
   def get_user_by_email!(email) do
     credential = Repo.get_by!(Credential, email: email)
-    Repo.preload(credential, :user).user
+    Repo.preload(credential, :user).user |> Repo.preload(:credential)
   end
 
   @doc """

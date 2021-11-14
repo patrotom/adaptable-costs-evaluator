@@ -68,9 +68,8 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
       conn = delete(conns[:authd], Routes.user_path(conns[:authd], :delete, user))
       assert response(conn, 204)
 
-      assert_error_sent 404, fn ->
-        get(conn, Routes.user_path(conn, :show, user))
-      end
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert response(conn, 401)
     end
   end
 
