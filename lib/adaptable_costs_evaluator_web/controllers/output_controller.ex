@@ -25,7 +25,10 @@ defmodule AdaptableCostsEvaluatorWeb.OutputController do
          {:ok, %Output{} = output} <- Outputs.create_output(output_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.computation_output_path(conn, :show, computation_id, output))
+      |> put_resp_header(
+        "location",
+        Routes.computation_output_path(conn, :show, computation_id, output)
+      )
       |> render("show.json", output: output)
     end
   end

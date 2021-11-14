@@ -2,7 +2,7 @@ defmodule AdaptableCostsEvaluatorWeb.OrganizationControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
   use AdaptableCostsEvaluator.Fixtures.{UserFixture, OrganizationFixture}
 
-  alias AdaptableCostsEvaluator.{Repo, Organizations}
+  alias AdaptableCostsEvaluator.{Repo, Organizations, Users}
   alias AdaptableCostsEvaluator.Organizations.Organization
 
   import AdaptableCostsEvaluator.Helpers.ConnHelper, only: [setup_authd_conn: 2]
@@ -26,8 +26,11 @@ defmodule AdaptableCostsEvaluatorWeb.OrganizationControllerTest do
 
       conn = get(conn, Routes.organization_path(conn, :show, id))
       organization = Organizations.get_organization!(id)
+      owner = Organizations.list_users(organization.id) |> List.first()
 
       assert json_response(conn, 200)["data"] == organization_response(organization)
+      assert owner != nil
+      assert Users.has_role?(:owner, owner.id, organization.id) == true
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
