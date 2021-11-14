@@ -7,7 +7,7 @@ config :adaptable_costs_evaluator, AdaptableCostsEvaluator.Repo,
   password: System.get_env("PGPASSWORD", "postgres"),
   database: System.get_env("PGDATABASE_DEV", "adaptable_costs_evaluator_dev"),
   hostname: System.get_env("PGHOST", "localhost"),
-  port: System.get_env("PGPORT", "5433"),
+  port: System.get_env("PGPORT", "5432"),
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

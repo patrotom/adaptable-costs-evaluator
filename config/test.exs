@@ -12,7 +12,7 @@ config :adaptable_costs_evaluator, AdaptableCostsEvaluator.Repo,
   database:
     "#{System.get_env("PGDATABASE_TEST", "adaptable_costs_evaluator_test")}#{System.get_env("MIX_TEST_PARTITION")}",
   hostname: System.get_env("PGHOST", "localhost"),
-  port: System.get_env("PGPORT", "5433"),
+  port: System.get_env("PGPORT", "5432"),
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
