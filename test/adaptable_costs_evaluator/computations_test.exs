@@ -37,7 +37,7 @@ defmodule AdaptableCostsEvaluator.ComputationsTest do
       assert {:ok, %Computation{} = computation} =
                Computations.create_computation(user, @valid_computation_attrs)
 
-      assert computation.name == "some name"
+      assert computation.name == @valid_computation_attrs["name"]
     end
 
     test "create_computation/1 with invalid data returns error changeset", %{
@@ -55,7 +55,7 @@ defmodule AdaptableCostsEvaluator.ComputationsTest do
       assert {:ok, %Computation{} = computation} =
                Computations.update_computation(computation, @update_computation_attrs)
 
-      assert computation.name == "some updated name"
+      assert computation.name == @update_computation_attrs["name"]
     end
 
     test "update_computation/2 with invalid data returns error changeset", %{

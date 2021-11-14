@@ -30,11 +30,15 @@ defmodule AdaptableCostsEvaluator.UsersTest do
 
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Users.create_user(@update_user_attrs)
-      assert user.first_name == "some updated first_name"
-      assert user.last_name == "some updated last_name"
-      assert user.middle_name == "some updated middle_name"
-      assert user.credential.email == "some_updated@example.com"
-      assert Bcrypt.verify_pass("87654321", user.credential.password_hash)
+      assert user.first_name == @update_user_attrs[:first_name]
+      assert user.last_name == @update_user_attrs[:last_name]
+      assert user.middle_name == @update_user_attrs[:middle_name]
+      assert user.credential.email == @update_user_attrs[:credential][:email]
+
+      assert Bcrypt.verify_pass(
+               @update_user_attrs[:credential][:password],
+               user.credential.password_hash
+             )
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -43,11 +47,15 @@ defmodule AdaptableCostsEvaluator.UsersTest do
 
     test "update_user/2 with valid data updates the user", %{user: user} do
       assert {:ok, %User{} = user} = Users.update_user(user, @update_user_attrs)
-      assert user.first_name == "some updated first_name"
-      assert user.last_name == "some updated last_name"
-      assert user.middle_name == "some updated middle_name"
-      assert user.credential.email == "some_updated@example.com"
-      assert Bcrypt.verify_pass("87654321", user.credential.password_hash)
+      assert user.first_name == @update_user_attrs[:first_name]
+      assert user.last_name == @update_user_attrs[:last_name]
+      assert user.middle_name == @update_user_attrs[:middle_name]
+      assert user.credential.email == @update_user_attrs[:credential][:email]
+
+      assert Bcrypt.verify_pass(
+               @update_user_attrs[:credential][:password],
+               user.credential.password_hash
+             )
     end
 
     test "update_user/2 with invalid data returns error changeset", %{user: user} do
@@ -65,11 +73,17 @@ defmodule AdaptableCostsEvaluator.UsersTest do
       assert %Ecto.Changeset{} = Users.change_user(user)
     end
 
-    test "list_organizations/1 returns all organizations of the user", %{user: user, organization: organization} do
+    test "list_organizations/1 returns all organizations of the user", %{
+      user: user,
+      organization: organization
+    } do
       assert Users.list_organizations(user.id) == [organization]
     end
 
-    test "has_role/3 determines whether the user has the role in the organization", %{user: user, organization: organization} do
+    test "has_role/3 determines whether the user has the role in the organization", %{
+      user: user,
+      organization: organization
+    } do
       assert Users.has_role?(:regular, user.id, organization.id) == true
       assert Users.has_role?(:owner, user.id, organization.id) == false
     end

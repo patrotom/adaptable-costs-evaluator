@@ -46,9 +46,9 @@ defmodule AdaptableCostsEvaluator.FormulasTest do
         |> Map.put(:computation_id, computation.id)
 
       assert {:ok, %Formula{} = formula} = Formulas.create_formula(attrs)
-      assert formula.definition == "some definition"
-      assert formula.label == "custom"
-      assert formula.name == "some name"
+      assert formula.definition == attrs[:definition]
+      assert formula.label == attrs[:label]
+      assert formula.name == attrs[:name]
     end
 
     test "create_formula/1 with invalid data returns error changeset" do
@@ -60,9 +60,9 @@ defmodule AdaptableCostsEvaluator.FormulasTest do
       computation: _
     } do
       assert {:ok, %Formula{} = formula} = Formulas.update_formula(formula, @update_formula_attrs)
-      assert formula.definition == "some updated definition"
-      assert formula.label == "some_updated_label"
-      assert formula.name == "some updated name"
+      assert formula.definition == @update_formula_attrs[:definition]
+      assert formula.label == @update_formula_attrs[:label]
+      assert formula.name == @update_formula_attrs[:name]
     end
 
     test "update_formula/2 with invalid data returns error changeset", %{

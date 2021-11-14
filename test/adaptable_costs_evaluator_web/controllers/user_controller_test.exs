@@ -37,7 +37,9 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
     end
 
     test "renders errors when data is invalid", %{conns: conns} do
-      conn = post(conns[:plain], Routes.user_path(conns[:plain], :create), user: @invalid_user_attrs)
+      conn =
+        post(conns[:plain], Routes.user_path(conns[:plain], :create), user: @invalid_user_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -45,7 +47,9 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
   describe "update user" do
     test "renders user when data is valid", %{conns: conns, user: user} do
       conn =
-        put(conns[:authd], Routes.user_path(conns[:authd], :update, user), user: @update_user_attrs)
+        put(conns[:authd], Routes.user_path(conns[:authd], :update, user),
+          user: @update_user_attrs
+        )
 
       assert %{"id" => id} = json_response(conn, 200)["data"]
 
@@ -57,7 +61,9 @@ defmodule AdaptableCostsEvaluatorWeb.UserControllerTest do
 
     test "renders errors when data is invalid", %{conns: conns, user: user} do
       conn =
-        put(conns[:authd], Routes.user_path(conns[:authd], :update, user), user: @invalid_user_attrs)
+        put(conns[:authd], Routes.user_path(conns[:authd], :update, user),
+          user: @invalid_user_attrs
+        )
 
       assert json_response(conn, 422)["errors"] != %{}
     end

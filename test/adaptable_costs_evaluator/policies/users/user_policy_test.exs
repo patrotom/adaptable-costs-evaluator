@@ -27,6 +27,7 @@ defmodule AdaptableCostsEvaluator.Policies.Users.UserPolicyTest do
 
     test "does not authorize different user", context do
       Organizations.delete_membership(context[:organization].id, context[:user2].id)
+
       Enum.each([:read, :update, :delete], fn action ->
         assert authorize(action, context[:user2], context[:user1].id) == false
       end)

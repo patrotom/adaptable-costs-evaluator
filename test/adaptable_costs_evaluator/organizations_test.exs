@@ -28,8 +28,8 @@ defmodule AdaptableCostsEvaluator.OrganizationsTest do
       assert {:ok, %Organization{} = organization} =
                Organizations.create_organization(@valid_organization_attrs)
 
-      assert organization.name == "some name"
-      assert organization.username == "some_username"
+      assert organization.name == @valid_organization_attrs[:name]
+      assert organization.username == @valid_organization_attrs[:username]
     end
 
     test "create_organization/1 with invalid data returns error changeset" do
@@ -43,8 +43,8 @@ defmodule AdaptableCostsEvaluator.OrganizationsTest do
       assert {:ok, %Organization{} = organization} =
                Organizations.update_organization(organization, @update_organization_attrs)
 
-      assert organization.name == "some updated name"
-      assert organization.username == "some_updated_username"
+      assert organization.name == @update_organization_attrs[:name]
+      assert organization.username == @update_organization_attrs[:username]
     end
 
     test "update_organization/2 with invalid data returns error changeset" do

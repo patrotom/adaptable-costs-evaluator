@@ -1,8 +1,6 @@
 defmodule AdaptableCostsEvaluatorWeb.MembershipControllerTest do
   use AdaptableCostsEvaluatorWeb.ConnCase
-  use AdaptableCostsEvaluator.Fixtures.{UserFixture,
-                                        OrganizationFixture,
-                                        MembershipFixture}
+  use AdaptableCostsEvaluator.Fixtures.{UserFixture, OrganizationFixture, MembershipFixture}
 
   alias AdaptableCostsEvaluator.Organizations
 
@@ -25,7 +23,11 @@ defmodule AdaptableCostsEvaluatorWeb.MembershipControllerTest do
   end
 
   describe "create membership" do
-    test "adds user to organization when data is valid", %{conn: conn, user: user, organization: organization} do
+    test "adds user to organization when data is valid", %{
+      conn: conn,
+      user: user,
+      organization: organization
+    } do
       conn = post(conn, Routes.membership_path(conn, :create, organization.id, user.id))
       assert response(conn, 201)
 
