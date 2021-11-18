@@ -13,7 +13,7 @@ defmodule AdaptableCostsEvaluator.Fixtures.UserFixture do
         credential: %{
           email: "some@example.com",
           password: "12345678"
-        },
+        }
       }
       @update_user_attrs %{
         first_name: "some updated first_name",
