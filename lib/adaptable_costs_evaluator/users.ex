@@ -58,8 +58,13 @@ defmodule AdaptableCostsEvaluator.Users do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user(attrs \\ %{}) do
-    attrs = Map.drop(attrs, [:admin, "admin"])
+  def create_user(attrs \\ %{}, admin \\ false) do
+    attrs =
+      if admin do
+        attrs
+      else
+        Map.drop(attrs, [:admin, "admin"])
+      end
 
     %User{}
     |> change_user(attrs)
