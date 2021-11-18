@@ -13,8 +13,7 @@ defmodule AdaptableCostsEvaluator.Fixtures.UserFixture do
         credential: %{
           email: "some@example.com",
           password: "12345678"
-        },
-        admin: false
+        }
       }
       @update_user_attrs %{
         first_name: "some updated first_name",
@@ -36,12 +35,15 @@ defmodule AdaptableCostsEvaluator.Fixtures.UserFixture do
       }
 
       def user_fixture(attrs \\ %{}) do
+        admin = attrs[:admin] || false
+
         {:ok, user} =
           attrs
           |> Enum.into(@valid_user_attrs)
-          |> Users.create_user()
+          |> Users.create_user(admin)
 
-        Map.replace(user, :credential, %{user.credential | password: nil})
+        AdaptableCostsEvaluator.Repo.reload(user)
+        |> Map.replace(:credential, %{user.credential | password: nil})
       end
 
       def user_response(%User{} = user) do

@@ -7,6 +7,14 @@ defmodule AdaptableCostsEvaluator.Policies.Users.UserPolicy do
 
   @behaviour Bodyguard.Policy
 
+  def authorize(:update_admin, %User{} = current_user, params) do
+    if params["admin"] == nil && params[:admin] == nil do
+      true
+    else
+      current_user.admin
+    end
+  end
+
   def authorize(:create, _, _), do: true
 
   def authorize(action, %User{} = current_user, user_id) do
