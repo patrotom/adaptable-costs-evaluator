@@ -2,7 +2,7 @@ defmodule AdaptableCostsEvaluator.Policies.Users.UserPolicyTest do
   use AdaptableCostsEvaluator.DataCase
   use AdaptableCostsEvaluator.Fixtures.{OrganizationFixture, UserFixture}
 
-  alias AdaptableCostsEvaluator.Organizations
+  alias AdaptableCostsEvaluator.{Organizations, Users}
   import AdaptableCostsEvaluator.Policies.Users.UserPolicy
 
   setup do
@@ -44,6 +44,24 @@ defmodule AdaptableCostsEvaluator.Policies.Users.UserPolicyTest do
     test "authorizes anyone", context do
       Organizations.delete_membership(context[:organization].id, context[:user1].id)
       assert authorize(:create, context[:user1], nil) == true
+    end
+  end
+
+  describe "authorize/3 for the update_admin action" do
+    test "authorizes administrator", context do
+      {:ok, user} = Users.update_user(context[:user1], %{admin: true})
+
+      assert authorize(:update_admin, user, %{"admin" => true}) == true
+    end
+
+    test "authorizes regular user when admin attribute is not being updated", context do
+      user = Repo.reload(context[:user1])
+      assert authorize(:update_admin, user, %{}) == true
+    end
+
+    test "does not authorize regular user when admin attribute is being updated", context do
+      user = Repo.reload(context[:user1])
+      assert authorize(:update_admin, user, %{"admin" => true}) == false
     end
   end
 end

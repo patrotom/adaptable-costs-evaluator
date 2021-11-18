@@ -59,6 +59,8 @@ defmodule AdaptableCostsEvaluator.Users do
 
   """
   def create_user(attrs \\ %{}) do
+    attrs = Map.drop(attrs, [:admin, "admin"])
+
     %User{}
     |> change_user(attrs)
     |> Ecto.Changeset.cast_assoc(:credential, with: &Credential.changeset/2)

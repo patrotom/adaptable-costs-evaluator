@@ -36,7 +36,8 @@ defmodule AdaptableCostsEvaluatorWeb.UserController do
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Users.get_user!(id)
 
-    with :ok <- Bodyguard.permit(User, :update, current_user(conn), user.id),
+    with :ok <- Bodyguard.permit(User, :update_admin, current_user(conn), user_params),
+         :ok <- Bodyguard.permit(User, :update, current_user(conn), user.id),
          {:ok, %User{} = user} <- Users.update_user(user, user_params) do
       render(conn, "show.json", user: user)
     end
