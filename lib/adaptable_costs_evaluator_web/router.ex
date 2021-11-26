@@ -3,12 +3,34 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
 
   alias AdaptableCostsEvaluatorWeb.Pipelines.{JWTAuthPipeline}
 
+  @swagger_ui_config [
+    path: "/api/v1/openapi",
+    default_model_expand_depth: 3
+  ]
+
   pipeline :jwt_authenticated do
     plug JWTAuthPipeline
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug OpenApiSpex.Plug.PutApiSpec, module: AdaptableCostsEvaluatorWeb.ApiSpec
+  end
+
+  pipeline :browser do
+    plug :accepts, ["html"]
+  end
+
+  scope "/api/v1" do
+    pipe_through :browser
+
+    get "/docs", OpenApiSpex.Plug.SwaggerUI, @swagger_ui_config
+  end
+
+  scope "/api/v1" do
+    pipe_through :api
+
+    get "/openapi", OpenApiSpex.Plug.RenderSpec, []
   end
 
   scope "/api/v1", AdaptableCostsEvaluatorWeb do
@@ -51,16 +73,16 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
       resources "/outputs", OutputController, except: [:new, :edit]
     end
 
-    get "/organizations/:organization_id/computations", ComputationController, :index,
+    get "/organizations/:organization_id/computations", ComputationController, :organization_index,
       as: :organization_computation
 
     post "/organizations/:organization_id/computations/:computation_id",
          ComputationController,
-         :create
+         :organization_create
 
     delete "/organizations/:organization_id/computations/:computation_id",
            ComputationController,
-           :delete
+           :organization_delete
 
     get "/users/:creator_id/computations", ComputationController, :index, as: :user_computation
 
