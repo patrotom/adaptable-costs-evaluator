@@ -25,7 +25,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec do
       paths: Paths.from_router(Router),
       components: %Components{
         securitySchemes: %{
-          "jwt" => %SecurityScheme{
+          "JWT" => %SecurityScheme{
             name: "JWT HTTP Authorization",
             type: "http",
             scheme: "bearer",
