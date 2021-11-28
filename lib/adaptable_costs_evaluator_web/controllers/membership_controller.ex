@@ -52,7 +52,7 @@ defmodule AdaptableCostsEvaluatorWeb.MembershipController do
     parameters: [Parameters.organization_id(), Parameters.user_id()],
     responses:
       [
-        no_content: {"User removed to the Organization", "application/json", nil}
+        no_content: {"User removed from the Organization", "application/json", nil}
       ] ++ Errors.internal_errors()
 
   def delete(conn, %{"organization_id" => organization_id, "user_id" => user_id} = params) do

@@ -36,7 +36,7 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
       creator_id: [
         in: :path,
         type: :integer,
-        description: "ID of the user who created the Computation",
+        description: "ID of the user who created the Computations",
         example: 42
       ]
     ],

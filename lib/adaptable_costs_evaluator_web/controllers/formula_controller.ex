@@ -113,7 +113,7 @@ defmodule AdaptableCostsEvaluatorWeb.FormulaController do
   end
 
   operation :evaluate,
-    summary: "Runs the evaluation of the Formula",
+    summary: "Run the evaluation of the Formula",
     description: """
     Runs the evaluation of the Formula and returns the result of the evaluation.
     It also returns the list of affected Outputs. An affected Output is an

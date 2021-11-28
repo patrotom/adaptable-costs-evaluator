@@ -54,8 +54,8 @@ defmodule AdaptableCostsEvaluatorWeb.RoleController do
   end
 
   operation :delete,
-    summary: "Delete the Role in the Computation",
-    parameters: [Parameters.id(), Parameters.computation_id()],
+    summary: "Delete the Role of the User in the Organization",
+    parameters: [Parameters.user_id(), Parameters.organization_id()],
     request_body:
       {"Role to delete", "application/json", Schemas.RoleRequest, required: true},
     responses:

@@ -21,6 +21,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec do
           name: "MIT License",
           url: "https://github.com/patrotom/adaptable-costs-evaluator/blob/master/LICENSE"
         }
+        # Add Author and other FANCY stuff here...
       },
       paths: Paths.from_router(Router),
       components: %Components{

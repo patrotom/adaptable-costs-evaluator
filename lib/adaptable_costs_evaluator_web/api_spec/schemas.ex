@@ -1,7 +1,7 @@
 defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   require OpenApiSpex
 
-  alias OpenApiSpex.Schema
+  alias OpenApiSpex.{Reference, Schema}
   alias AdaptableCostsEvaluatorWeb.ApiSpec.Attributes
 
   # Computation
@@ -37,7 +37,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   defmodule ComputationRequest do
     OpenApiSpex.schema(%{
       title: "Computation Request",
-      description: "Request body for creating a new Computation",
+      description: "Request body of the Computation",
       type: :object,
       properties: %{
         computation: Computation
@@ -133,7 +133,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   defmodule EvaluatorRequest do
     OpenApiSpex.schema(%{
       title: "Evaluator Request",
-      description: "Request body for creating a new Evaluator",
+      description: "Request body of the Evaluator",
       type: :object,
       properties: %{
         evaluator: Evaluator
@@ -224,7 +224,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   defmodule FieldSchemaRequest do
     OpenApiSpex.schema(%{
       title: "FieldSchema Request",
-      description: "Request body for creating a new FieldSchema",
+      description: "Request body of the FieldSchema",
       type: :object,
       properties: %{
         field_schema: FieldSchema
@@ -331,7 +331,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   defmodule FormulaRequest do
     OpenApiSpex.schema(%{
       title: "Formula Request",
-      description: "Request body for creating a new Formula",
+      description: "Request body of the Formula",
       type: :object,
       properties: %{
         formula: Formula
@@ -403,16 +403,24 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
         data: %Schema{
           type: :object,
           properties: %{
-            result: %Schema{type: :object, description: "Value of the result in the JSON format"}
-            # TODO: affected_outputs
+            result: %Schema{type: :object, description: "Value of the result in the JSON format"},
+            affected_outputs: %Schema{type: :array, items: %Reference{"$ref": "#/components/schemas/Output"}}
           }
         }
       },
       example: %{
         "data" => %{
-          "id" => 42,
-          "result" => 150
-          # TODO: affected_outputs
+          "result" => 150,
+          "affected_outputs" => [
+            %{
+              "id" => 42,
+              "name" => "Total sum",
+              "label" => "total_sum",
+              "last_value" => 150,
+              "field_schema_id" => 3,
+              "formula_id" => 7
+            }
+          ]
         }
       },
       "x-struct": __MODULE__
@@ -426,7 +434,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
       title: "Input",
       description: """
       An Input holds the input data provided by the client. The value of
-      the input is always validated against the linked FieldSchema. The
+      the Input is always validated against the linked FieldSchema. The
       Input can be seen as a variable which can hold data of the type
       determined by the linked FieldSchema.
       """,
@@ -463,7 +471,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   defmodule InputRequest do
     OpenApiSpex.schema(%{
       title: "Input Request",
-      description: "Request body for creating a new Input",
+      description: "Request body of the Input",
       type: :object,
       properties: %{
         input: Input
@@ -561,7 +569,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   defmodule OrganizationRequest do
     OpenApiSpex.schema(%{
       title: "Organization Request",
-      description: "Request body for creating a new Organization",
+      description: "Request body of the Organization",
       type: :object,
       properties: %{
         organization: Organization
@@ -623,7 +631,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
       title: "Output",
       description: """
       An Output holds the result of the evaluation of the particular
-      Formula. The value of the output is always validated against the
+      Formula. The value of the Output is always validated against the
       linked FieldSchema.
       """,
       type: :object,
@@ -661,7 +669,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   defmodule OutputRequest do
     OpenApiSpex.schema(%{
       title: "Output Request",
-      description: "Request body for creating a new Output",
+      description: "Request body of the Output",
       type: :object,
       properties: %{
         output: Output
@@ -756,7 +764,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   defmodule RoleRequest do
     OpenApiSpex.schema(%{
       title: "Role Request",
-      description: "Request body for creating a new Role",
+      description: "Request body of the Role",
       type: :object,
       properties: %{
         role: Role
@@ -813,9 +821,9 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
       type: :object,
       properties: %{
         id: Attributes.id(),
-        first_name: %Schema{type: :string, description: "First name of the user", maxLength: 50},
-        middle_name: %Schema{type: :string, description: "Middle name of the user", maxLength: 50},
-        last_name: %Schema{type: :string, description: "Last name of the user", maxLength: 50},
+        first_name: %Schema{type: :string, description: "First name of the User", maxLength: 50},
+        middle_name: %Schema{type: :string, description: "Middle name of the User", maxLength: 50},
+        last_name: %Schema{type: :string, description: "Last name of the User", maxLength: 50},
         credential: %Schema{
           type: :object,
           properties: %{
@@ -845,7 +853,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
   defmodule UserRequest do
     OpenApiSpex.schema(%{
       title: "User Request",
-      description: "User request body",
+      description: "Request body of the User",
       type: :object,
       properties: %{
         user: User
