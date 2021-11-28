@@ -3,6 +3,8 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec do
   alias AdaptableCostsEvaluatorWeb.{Endpoint, Router}
   @behaviour OpenApi
 
+  @dialyzer {:nowarn_function, spec: 0}
+
   @impl OpenApi
   def spec do
     %OpenApi{
