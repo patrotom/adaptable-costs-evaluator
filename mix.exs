@@ -24,7 +24,7 @@ defmodule AdaptableCostsEvaluator.MixProject do
     ]
   end
 
-  def version do
+  defp version do
     case File.read("VERSION") do
       {:error, _} -> raise "VERSION file is missing or corrupted!"
       {:ok, version} -> version

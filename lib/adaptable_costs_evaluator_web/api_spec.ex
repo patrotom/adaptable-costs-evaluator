@@ -3,8 +3,6 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec do
   alias AdaptableCostsEvaluatorWeb.{Endpoint, Router}
   @behaviour OpenApi
 
-  @dialyzer {:nowarn_function, spec: 0}
-
   @impl OpenApi
   def spec do
     %OpenApi{
@@ -13,7 +11,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec do
       ],
       info: %Info{
         title: System.get_env("APP_NAME", "Adaptable Costs Evaluator"),
-        version: Mix.Project.config()[:version],
+        version: version(),
         description:
           System.get_env(
             "APP_DESCRIPTION",
@@ -41,5 +39,12 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec do
       }
     }
     |> OpenApiSpex.resolve_schema_modules()
+  end
+
+  defp version do
+    case File.read("VERSION") do
+      {:error, _} -> raise "VERSION file is missing or corrupted!"
+      {:ok, version} -> version
+    end
   end
 end
