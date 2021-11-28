@@ -34,7 +34,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Errors do
       type: :object,
       example: %{
         "errors" => %{
-            "detail" => "Internal Server Error"
+          "detail" => "Internal Server Error"
         }
       }
     })
@@ -46,7 +46,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Errors do
       type: :object,
       example: %{
         "errors" => %{
-            "detail" => "Not Found"
+          "detail" => "Not Found"
         }
       }
     })
@@ -58,7 +58,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Errors do
       type: :object,
       example: %{
         "resource" => %{
-            "attribute" => ["Error reason"]
+          "attribute" => ["Error reason"]
         }
       }
     })

@@ -73,8 +73,10 @@ defmodule AdaptableCostsEvaluatorWeb.Router do
       resources "/outputs", OutputController, except: [:new, :edit]
     end
 
-    get "/organizations/:organization_id/computations", ComputationController, :organization_index,
-      as: :organization_computation
+    get "/organizations/:organization_id/computations",
+        ComputationController,
+        :organization_index,
+        as: :organization_computation
 
     post "/organizations/:organization_id/computations/:computation_id",
          ComputationController,

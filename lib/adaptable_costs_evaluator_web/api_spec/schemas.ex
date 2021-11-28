@@ -404,7 +404,10 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
           type: :object,
           properties: %{
             result: %Schema{type: :object, description: "Value of the result in the JSON format"},
-            affected_outputs: %Schema{type: :array, items: %Reference{"$ref": "#/components/schemas/Output"}}
+            affected_outputs: %Schema{
+              type: :array,
+              items: %Reference{"$ref": "#/components/schemas/Output"}
+            }
           }
         }
       },

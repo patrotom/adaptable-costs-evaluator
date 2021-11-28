@@ -34,8 +34,7 @@ defmodule AdaptableCostsEvaluatorWeb.InputController do
   operation :create,
     summary: "Create a new Input in the Computation",
     parameters: [Parameters.computation_id()],
-    request_body:
-      {"Input attributes", "application/json", Schemas.InputRequest, required: true},
+    request_body: {"Input attributes", "application/json", Schemas.InputRequest, required: true},
     responses:
       [
         created: {"Input response", "application/json", Schemas.InputResponse}
@@ -77,8 +76,7 @@ defmodule AdaptableCostsEvaluatorWeb.InputController do
   operation :update,
     summary: "Update the Input in the Computation",
     parameters: [Parameters.id(), Parameters.computation_id()],
-    request_body:
-      {"Input attributes", "application/json", Schemas.InputRequest, required: true},
+    request_body: {"Input attributes", "application/json", Schemas.InputRequest, required: true},
     responses:
       [
         ok: {"Input response", "application/json", Schemas.InputResponse}

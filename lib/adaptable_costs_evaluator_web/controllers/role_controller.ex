@@ -32,8 +32,7 @@ defmodule AdaptableCostsEvaluatorWeb.RoleController do
   operation :create,
     summary: "Create a new Role for the User in the Organization",
     parameters: [Parameters.user_id(), Parameters.organization_id()],
-    request_body:
-      {"Role attributes", "application/json", Schemas.RoleRequest, required: true},
+    request_body: {"Role attributes", "application/json", Schemas.RoleRequest, required: true},
     responses:
       [
         created: {"Role was successfully created ", "application/json", nil}
@@ -56,8 +55,7 @@ defmodule AdaptableCostsEvaluatorWeb.RoleController do
   operation :delete,
     summary: "Delete the Role of the User in the Organization",
     parameters: [Parameters.user_id(), Parameters.organization_id()],
-    request_body:
-      {"Role to delete", "application/json", Schemas.RoleRequest, required: true},
+    request_body: {"Role to delete", "application/json", Schemas.RoleRequest, required: true},
     responses:
       [
         no_content: {"Role was successfully deleted", "application/json", nil}
