@@ -1,5 +1,5 @@
 defmodule AdaptableCostsEvaluatorWeb.ApiSpec do
-  alias OpenApiSpex.{Components, Info, OpenApi, Paths, Server, License, SecurityScheme}
+  alias OpenApiSpex.{Components, Info, OpenApi, Paths, Server, License, SecurityScheme, Contact}
   alias AdaptableCostsEvaluatorWeb.{Endpoint, Router}
   @behaviour OpenApi
 
@@ -20,8 +20,11 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec do
         license: %License{
           name: "MIT License",
           url: "https://github.com/patrotom/adaptable-costs-evaluator/blob/master/LICENSE"
+        },
+        contact: %Contact{
+          email: "tomas.patro@gmail.com",
+          name: "Tomáš Patro"
         }
-        # Add Author and other FANCY stuff here...
       },
       paths: Paths.from_router(Router),
       components: %Components{
