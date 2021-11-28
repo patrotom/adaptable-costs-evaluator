@@ -4,7 +4,7 @@ defmodule AdaptableCostsEvaluator.MixProject do
   def project do
     [
       app: :adaptable_costs_evaluator,
-      version: "0.1.0",
+      version: version(),
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -22,6 +22,13 @@ defmodule AdaptableCostsEvaluator.MixProject do
       mod: {AdaptableCostsEvaluator.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
+  end
+
+  defp version do
+    case File.read("VERSION") do
+      {:error, _} -> raise "VERSION file is missing or corrupted!"
+      {:ok, version} -> version
+    end
   end
 
   # Specifies which paths to compile per environment.
@@ -50,6 +57,7 @@ defmodule AdaptableCostsEvaluator.MixProject do
       {:bodyguard, "~> 2.4"},
       {:abacus, "~> 2.0"},
       {:ex_json_schema, "~> 0.9.1"},
+      {:open_api_spex, "~> 3.11"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end

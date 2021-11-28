@@ -31,7 +31,11 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationControllerTest do
       conn =
         get(
           context[:conn],
-          Routes.organization_computation_path(context[:conn], :index, context[:organization].id)
+          Routes.organization_computation_path(
+            context[:conn],
+            :organization_index,
+            context[:organization].id
+          )
         )
 
       assert json_response(conn, 200)["data"] == [computation_response(context[:computation])]
@@ -70,7 +74,7 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationControllerTest do
           context[:conn],
           Routes.computation_path(
             context[:conn],
-            :create,
+            :organization_create,
             context[:organization].id,
             context[:computation].id
           )
@@ -130,7 +134,7 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationControllerTest do
           context[:conn],
           Routes.computation_path(
             context[:conn],
-            :delete,
+            :organization_delete,
             context[:organization].id,
             context[:computation].id
           )

@@ -1,20 +1,49 @@
 defmodule AdaptableCostsEvaluatorWeb.ComputationController do
   use AdaptableCostsEvaluatorWeb, :controller
+  use OpenApiSpex.ControllerSpecs
 
   import AdaptableCostsEvaluatorWeb.Helpers.AuthHelper, only: [current_user: 1]
 
   alias AdaptableCostsEvaluator.Computations
   alias AdaptableCostsEvaluator.Computations.Computation
 
+  alias AdaptableCostsEvaluatorWeb.ApiSpec.{Schemas, Parameters, Errors}
+
   action_fallback AdaptableCostsEvaluatorWeb.FallbackController
 
-  def index(conn, %{"organization_id" => organization_id}) do
+  tags ["Computations"]
+  security [%{"JWT" => []}]
+
+  operation :organization_index,
+    summary: "List Computations in the Organization",
+    parameters: [Parameters.organization_id()],
+    responses:
+      [
+        ok: {"Computation list response", "application/json", Schemas.ComputationsResponse}
+      ] ++ Errors.internal_errors()
+
+  def organization_index(conn, %{"organization_id" => organization_id}) do
     with :ok <-
            Bodyguard.permit(Computation, :organization_list, current_user(conn), organization_id) do
       computations = Computations.list_computations(organization_id: organization_id)
       render(conn, "index.json", computations: computations)
     end
   end
+
+  operation :index,
+    summary: "List Computations of the User",
+    parameters: [
+      creator_id: [
+        in: :path,
+        type: :integer,
+        description: "ID of the user who created the Computations",
+        example: 42
+      ]
+    ],
+    responses:
+      [
+        ok: {"Computation list response", "application/json", Schemas.ComputationsResponse}
+      ] ++ Errors.internal_errors()
 
   def index(conn, %{"creator_id" => creator_id}) do
     with :ok <-
@@ -23,6 +52,15 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
       render(conn, "index.json", computations: computations)
     end
   end
+
+  operation :create,
+    summary: "Create a new Computation",
+    request_body:
+      {"Computation attributes", "application/json", Schemas.ComputationRequest, required: true},
+    responses:
+      [
+        created: {"Computation response", "application/json", Schemas.ComputationResponse}
+      ] ++ Errors.all_errors()
 
   def create(conn, %{"computation" => computation_params}) do
     with :ok <- Bodyguard.permit(Computation, :create, nil, nil),
@@ -35,7 +73,19 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
     end
   end
 
-  def create(conn, %{"organization_id" => organization_id, "computation_id" => computation_id}) do
+  operation :organization_create,
+    summary: "Add the Computation to the Organization",
+    parameters: [Parameters.organization_id(), Parameters.computation_id()],
+    responses:
+      [
+        no_content:
+          {"Computation successfully added to the Organization", "application/json", nil}
+      ] ++ Errors.internal_errors()
+
+  def organization_create(conn, %{
+        "organization_id" => organization_id,
+        "computation_id" => computation_id
+      }) do
     computation = Computations.get_computation!(computation_id)
     bodyguard_params = %{computation_id: computation_id, organization_id: organization_id}
 
@@ -51,6 +101,14 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
     end
   end
 
+  operation :show,
+    summary: "Retrieve the Computation",
+    parameters: [Parameters.id()],
+    responses:
+      [
+        ok: {"Computation response", "application/json", Schemas.ComputationResponse}
+      ] ++ Errors.internal_errors()
+
   def show(conn, %{"id" => id}) do
     computation = Computations.get_computation!(id)
 
@@ -58,6 +116,16 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
       render(conn, "show.json", computation: computation)
     end
   end
+
+  operation :update,
+    summary: "Update the Computation",
+    parameters: [Parameters.id()],
+    request_body:
+      {"Computation attributes", "application/json", Schemas.ComputationRequest, required: true},
+    responses:
+      [
+        ok: {"Computation response", "application/json", Schemas.ComputationResponse}
+      ] ++ Errors.all_errors()
 
   def update(conn, %{"id" => id, "computation" => computation_params}) do
     computation = Computations.get_computation!(id)
@@ -69,6 +137,14 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
     end
   end
 
+  operation :delete,
+    summary: "Delete the Computation",
+    parameters: [Parameters.id()],
+    responses:
+      [
+        no_content: {"Computation was successfully deleted", "application/json", nil}
+      ] ++ Errors.internal_errors()
+
   def delete(conn, %{"id" => id}) do
     computation = Computations.get_computation!(id)
 
@@ -78,7 +154,19 @@ defmodule AdaptableCostsEvaluatorWeb.ComputationController do
     end
   end
 
-  def delete(conn, %{"organization_id" => organization_id, "computation_id" => computation_id}) do
+  operation :organization_delete,
+    summary: "Remove the Computation from the Organization",
+    parameters: [Parameters.computation_id(), Parameters.organization_id()],
+    responses:
+      [
+        no_content:
+          {"Computation was successfully removed from the Organization", "application/json", nil}
+      ] ++ Errors.internal_errors()
+
+  def organization_delete(conn, %{
+        "organization_id" => organization_id,
+        "computation_id" => computation_id
+      }) do
     computation =
       Computations.get_computation_by!(
         organization_id: organization_id,
