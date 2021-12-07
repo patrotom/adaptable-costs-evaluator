@@ -10,7 +10,7 @@
 <!-- HEADER -->
 <br>
 <div align="center">
-  <h3 align="center">Adaptable Costs Evaluator (ACE)</h3>
+  <h1 align="center">Adaptable Costs Evaluator (ACE)</h1>
 
   <p align="center">
     This repository contains the back-end of the ACE application. It is implemented as a web service with the REST API.
