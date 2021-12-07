@@ -37,7 +37,12 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#development">Development</a></li>
-    <li><a href="#contributing">Contributing</a></li>
+    <li>
+      <a href="#contributing">Contributing</a>
+      <ul>
+        <a href="#versioning">Versioning</a>
+      </ul>
+    </li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -132,6 +137,11 @@ Don't forget to give the project a star! Thanks again!
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`).
 4. Push to the Branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
+
+### Versioning
+
+* The versioning scheme we use is [SemVer](https://semver.org/). If you plan to release a new version, increase the version in the [VERSION](VERSION) file.
+* Create a new [GitHub Release](https://github.com/patrotom/adaptable-costs-evaluator/releases/new) and add a proper changelog to the description of the release.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
