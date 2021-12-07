@@ -4,6 +4,8 @@
 [![CI][ci-shield]][ci-url]
 [![Issues][issues-shield]][issues-url]
 [![License][license-shield]][license-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
 
 <!-- HEADER -->
 <br>
@@ -164,3 +166,7 @@ This project was created as part of the master thesis of Tomáš Patro at the [C
 [issues-url]: https://github.com/patrotom/adaptable-costs-evaluator/issues
 [license-shield]: https://img.shields.io/github/license/patrotom/adaptable-costs-evaluator.svg?style=for-the-badge
 [license-url]: https://github.com/patrotom/adaptable-costs-evaluator/blob/master/LICENSE
+[forks-shield]: https://img.shields.io/github/forks/patrotom/adaptable-costs-evaluator.svg?style=for-the-badge
+[forks-url]: https://github.com/patrotom/adaptable-costs-evaluator/network/members
+[stars-shield]: https://img.shields.io/github/stars/patrotom/adaptable-costs-evaluator.svg?style=for-the-badge
+[stars-url]: https://github.com/patrotom/adaptable-costs-evaluator/stargazers
