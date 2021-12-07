@@ -40,7 +40,7 @@
     <li>
       <a href="#contributing">Contributing</a>
       <ul>
-        <a href="#versioning">Versioning</a>
+        <li><a href="#versioning">Versioning</a></li>
       </ul>
     </li>
     <li><a href="#license">License</a></li>
