@@ -1,5 +1,5 @@
 # Extend from the official Elixir image
-FROM elixir:1.12.3
+FROM elixir:1.13.0
 
 # Create app directory and copy the Elixir projects into it
 RUN mkdir /app
