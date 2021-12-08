@@ -4,7 +4,7 @@ defmodule AdaptableCostsEvaluator.Validators.Validator do
   validator represents validation of the single attribute within the `Ecto.Changeset`.
   """
 
-  @moduledoc """
+  @doc """
   Takes an `Ecto.Changeset` and performs a validation of the particular attribute.
   """
   @callback validate(Ecto.Changeset.t()) :: Ecto.Changeset.t()
