@@ -1,4 +1,10 @@
 defmodule AdaptableCostsEvaluator.Users.User do
+  @moduledoc """
+  A `AdaptableCostsEvaluator.Users.User` represents a concrete user/account
+  within the application. Most of the endpoints require authenticated
+  `AdaptableCostsEvaluator.Users.User` in order to work with them.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

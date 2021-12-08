@@ -1,4 +1,10 @@
 defmodule AdaptableCostsEvaluator.Organizations.Membership do
+  @moduledoc """
+  A `AdaptableCostsEvaluator.Organizations.Membership` is a simple resource
+  representing a belonging of the `AdaptableCostsEvaluator.Users.User` to the
+  particular `AdaptableCostsEvaluator.Organizations.Organization`.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

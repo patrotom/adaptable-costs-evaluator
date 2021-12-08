@@ -1,4 +1,13 @@
 defmodule AdaptableCostsEvaluator.Inputs.Input do
+  @moduledoc """
+  An `AdaptableCostsEvaluator.Inputs.Input` holds the input data provided by the client.
+  The value of the `AdaptableCostsEvaluator.Inputs.Input` is always validated against
+  the linked `AdaptableCostsEvaluator.FieldSchemas.FieldSchema`.
+  The `AdaptableCostsEvaluator.Inputs.Input` can be seen as a variable which
+  can hold data of the type determined by the linked
+  `AdaptableCostsEvaluator.FieldSchemas.FieldSchema`.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

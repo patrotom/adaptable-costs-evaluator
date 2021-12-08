@@ -1,4 +1,9 @@
 defmodule AdaptableCostsEvaluator.Users.Credential do
+  @moduledoc """
+  A `AdaptableCostsEvaluator.Users.Credential` record holds authentication details
+  of the particular `AdaptableCostsEvaluator.Users.User`.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

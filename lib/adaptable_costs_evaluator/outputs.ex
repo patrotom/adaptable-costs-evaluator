@@ -10,7 +10,7 @@ defmodule AdaptableCostsEvaluator.Outputs do
   alias AdaptableCostsEvaluator.Computations.Computation
 
   @doc """
-  Returns the list of outputs.
+  Returns the list of outputs in the computation.
 
   ## Examples
 
@@ -23,7 +23,7 @@ defmodule AdaptableCostsEvaluator.Outputs do
   end
 
   @doc """
-  Gets a single output.
+  Gets a single output from the computation.
 
   Raises `Ecto.NoResultsError` if the Output does not exist.
 
@@ -41,7 +41,7 @@ defmodule AdaptableCostsEvaluator.Outputs do
   end
 
   @doc """
-  Creates a output.
+  Creates an output.
 
   ## Examples
 
@@ -59,7 +59,7 @@ defmodule AdaptableCostsEvaluator.Outputs do
   end
 
   @doc """
-  Updates a output.
+  Updates an output.
 
   ## Examples
 
@@ -77,7 +77,7 @@ defmodule AdaptableCostsEvaluator.Outputs do
   end
 
   @doc """
-  Deletes a output.
+  Deletes an output.
 
   ## Examples
 

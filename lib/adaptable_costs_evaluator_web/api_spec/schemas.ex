@@ -546,7 +546,7 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
       together on their development.
 
       A User can be a member of the multiple Organizations. Each User has
-      a role withing the Organization that determines the level of permissions
+      a Role within the Organization that determines the level of permissions
       to read and manipulate resources in the Organization.
       """,
       type: :object,

@@ -11,11 +11,11 @@ defmodule AdaptableCostsEvaluator.Formulas do
   alias AdaptableCostsEvaluator.Computations.Computation
 
   @doc """
-  Returns the list of formulas.
+  Returns the list of formulas in the computation.
 
   ## Examples
 
-      iex> list_formulas()
+      iex> list_formulas(computation)
       [%Formula{}, ...]
 
   """
@@ -24,16 +24,16 @@ defmodule AdaptableCostsEvaluator.Formulas do
   end
 
   @doc """
-  Gets a single formula.
+  Gets a single formula from the computation.
 
   Raises `Ecto.NoResultsError` if the Formula does not exist.
 
   ## Examples
 
-      iex> get_formula!(123)
+      iex> get_formula!(123, computation)
       %Formula{}
 
-      iex> get_formula!(456)
+      iex> get_formula!(456, computation)
       ** (Ecto.NoResultsError)
 
   """
@@ -106,6 +106,15 @@ defmodule AdaptableCostsEvaluator.Formulas do
     Formula.changeset(formula, attrs)
   end
 
+  @doc """
+  Runs the evaluation of the formula.
+
+  It evaluates the formula using the linked evaluator. Returns a map with the
+  result and affected outputs where the `last_value` attribute has been updated.
+  """
+  @spec evaluate_formula(%AdaptableCostsEvaluator.Formulas.Formula{}) ::
+          {:error, {:unprocessable_entity, [...]}}
+          | {:ok, %{outputs: list, result: any}}
   def evaluate_formula(%Formula{evaluator_id: nil}) do
     {:error, "evaluator not specified"}
   end

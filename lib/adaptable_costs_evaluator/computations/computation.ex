@@ -1,4 +1,12 @@
 defmodule AdaptableCostsEvaluator.Computations.Computation do
+  @moduledoc """
+  A `AdaptableCostsEvaluator.Computations.Computation` groups multiple
+  `AdaptableCostsEvaluator.Formulas.Formula`s,
+  `AdaptableCostsEvaluator.Inputs.Input`s, and
+  `AdaptableCostsEvaluator.Outputs.Output`s together in a form of a container.
+  This resource can be compared to a spreadsheet in the conventional office programs.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

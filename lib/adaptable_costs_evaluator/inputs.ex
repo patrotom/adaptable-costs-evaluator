@@ -10,11 +10,11 @@ defmodule AdaptableCostsEvaluator.Inputs do
   alias AdaptableCostsEvaluator.Computations.Computation
 
   @doc """
-  Returns the list of inputs.
+  Returns the list of inputs in the computation.
 
   ## Examples
 
-      iex> list_inputs()
+      iex> list_inputs(computation)
       [%Input{}, ...]
 
   """
@@ -23,16 +23,16 @@ defmodule AdaptableCostsEvaluator.Inputs do
   end
 
   @doc """
-  Gets a single input.
+  Gets a single input from the computation.
 
   Raises `Ecto.NoResultsError` if the Input does not exist.
 
   ## Examples
 
-      iex> get_input!(123)
+      iex> get_input!(123, computation)
       %Input{}
 
-      iex> get_input!(456)
+      iex> get_input!(456, computation)
       ** (Ecto.NoResultsError)
 
   """
@@ -40,12 +40,15 @@ defmodule AdaptableCostsEvaluator.Inputs do
     Repo.get_by!(Input, id: id, computation_id: computation.id)
   end
 
+  @doc """
+  Gets a single input defined by the given `attrs`.
+  """
   def get_by(attrs \\ []) do
     Repo.get_by(Input, attrs)
   end
 
   @doc """
-  Creates a input.
+  Creates an input.
 
   ## Examples
 
@@ -63,7 +66,7 @@ defmodule AdaptableCostsEvaluator.Inputs do
   end
 
   @doc """
-  Updates a input.
+  Updates an input.
 
   ## Examples
 
@@ -81,7 +84,7 @@ defmodule AdaptableCostsEvaluator.Inputs do
   end
 
   @doc """
-  Deletes a input.
+  Deletes an input.
 
   ## Examples
 

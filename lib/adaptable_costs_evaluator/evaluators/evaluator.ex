@@ -1,4 +1,11 @@
 defmodule AdaptableCostsEvaluator.Evaluators.Evaluator do
+  @moduledoc """
+  An `AdaptableCostsEvaluator.Evaluators.Evaluator` is the concrete implementation
+  of a `AdaptableCostsEvaluator.Formulas.Formula` evaluator that is capable
+  of reading the definition of the `AdaptableCostsEvaluator.Formulas.Formula`
+  and evaluating it.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -28,6 +35,12 @@ defmodule AdaptableCostsEvaluator.Evaluators.Evaluator do
     |> validate_module()
   end
 
+  @doc """
+  Checks if the implementation of the evaluator module exists.
+
+  The existing implementations are stored in the `@implementations` `List`.
+  """
+  @spec validate_module(Ecto.Changeset.t()) :: Ecto.Changeset.t()
   def validate_module(changeset) do
     validate_change(changeset, :module, fn :module, module ->
       if !Enum.member?(@implementations, module) do
@@ -41,5 +54,9 @@ defmodule AdaptableCostsEvaluator.Evaluators.Evaluator do
   defdelegate authorize(action, user, params),
     to: AdaptableCostsEvaluator.Policies.Evaluators.EvaluatorPolicy
 
+  @doc """
+  Evaluates given `AdaptableCostsEvaluator.Formulas.Formula` by using a particular
+  evaluator implementation.
+  """
   @callback evaluate(%Formula{}) :: any()
 end
