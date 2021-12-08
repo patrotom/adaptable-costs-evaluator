@@ -5,12 +5,24 @@ defmodule AdaptableCostsEvaluator.MixProject do
     [
       app: :adaptable_costs_evaluator,
       version: version(),
-      elixir: "~> 1.12",
+      elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [
+        ignore_modules: [
+          ~r/^(AdaptableCostsEvaluatorWeb\.ApiSpec).*$/,
+          AdaptableCostsEvaluatorWeb,
+          AdaptableCostsEvaluatorWeb.ChannelCase,
+          AdaptableCostsEvaluatorWeb.UserSocket,
+          AdaptableCostsEvaluator.Guardian.Plug,
+          AdaptableCostsEvaluator.Repo,
+          AdaptableCostsEvaluator.DataCase,
+          AdaptableCostsEvaluator.Application
+        ]
+      ]
     ]
   end
 
