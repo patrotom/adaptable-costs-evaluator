@@ -1,4 +1,18 @@
 defmodule AdaptableCostsEvaluator.Organizations.Organization do
+  @moduledoc """
+  An `AdaptableCostsEvaluator.Organizations.Organization` groups multiple
+  `AdaptableCostsEvaluator.Users.User`s together. The `AdaptableCostsEvaluator.Users.User`s,
+  within the `AdaptableCostsEvaluator.Organizations.Organization`, can share
+  the `AdaptableCostsEvaluator.Computations.Computation`s together and
+  collaborate together on their development.
+
+  `AdaptableCostsEvaluator.Users.User` can be a member of the multiple
+  `AdaptableCostsEvaluator.Organizations.Organization`s. Each
+  `AdaptableCostsEvaluator.Users.User` has a `AdaptableCostsEvaluator.Organizations.Role`
+  within the Organization that determines the level of permissions to read and
+  manipulate resources in the `AdaptableCostsEvaluator.Organizations.Organization`.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

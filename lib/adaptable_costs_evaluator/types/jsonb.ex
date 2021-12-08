@@ -1,4 +1,8 @@
 defmodule AdaptableCostsEvaluator.Types.JSONB do
+  @moduledoc """
+  A custom definition of the PostgreSQL JSONB type to be used in `Ecto.Changeset`.
+  """
+
   use Ecto.Type
 
   @impl true

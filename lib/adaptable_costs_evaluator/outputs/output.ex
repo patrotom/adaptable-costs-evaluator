@@ -1,4 +1,11 @@
 defmodule AdaptableCostsEvaluator.Outputs.Output do
+  @moduledoc """
+  An `AdaptableCostsEvaluator.Outputs.Output` holds the result of the evaluation
+  of the particular `AdaptableCostsEvaluator.Formulas.Formula`. The value of the
+  `AdaptableCostsEvaluator.Outputs.Output` is always validated against the linked
+  `AdaptableCostsEvaluator.FieldSchemas.FieldSchema`.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

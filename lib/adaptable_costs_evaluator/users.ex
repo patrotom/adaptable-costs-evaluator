@@ -41,6 +41,9 @@ defmodule AdaptableCostsEvaluator.Users do
     |> Repo.preload(:credential)
   end
 
+  @doc """
+  Gets a single user by the email attribute.
+  """
   def get_user_by_email!(email) do
     credential = Repo.get_by!(Credential, email: email)
     Repo.preload(credential, :user).user |> Repo.preload(:credential)
@@ -48,6 +51,8 @@ defmodule AdaptableCostsEvaluator.Users do
 
   @doc """
   Creates a user.
+
+  Creates an admin user if the `admin` parameter is set to `true`.
 
   ## Examples
 
@@ -133,11 +138,17 @@ defmodule AdaptableCostsEvaluator.Users do
     User.changeset(user, attrs)
   end
 
+  @doc """
+  Returns a list of organizations the user is part of.
+  """
   def list_organizations(user_id) do
     user = get_user!(user_id)
     Repo.preload(user, :organizations).organizations
   end
 
+  @doc """
+  Checks whether the user has a given role in the given organization.
+  """
   def has_role?(role_type, user_id, organization_id) do
     user = get_user!(user_id)
     organization = Organizations.get_organization!(organization_id)
@@ -147,10 +158,19 @@ defmodule AdaptableCostsEvaluator.Users do
     |> Enum.member?(role_type)
   end
 
+  @doc """
+  Hashes the given password with a random salt.
+  """
   def hash_password(password) do
     Bcrypt.hash_pwd_salt(password)
   end
 
+  @doc """
+  Takes the given email and password and returns a new JWT that can be used for
+  the authentication of the user.
+
+  The user with the given email has to exist, otherwise, it returns an error.
+  """
   def token_sign_in(email, password) do
     case email_password_auth(email, password) do
       {:ok, user} ->

@@ -1,4 +1,10 @@
 defmodule AdaptableCostsEvaluator.FieldSchemas.FieldSchema do
+  @moduledoc """
+  A `AdaptableCostsEvaluator.FieldSchemas.FieldSchema` is any JSON schema that
+  can be used to validate a value of the `AdaptableCostsEvaluator.Inputs.Input`
+  or `AdaptableCostsEvaluator.Outputs.Output` against.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

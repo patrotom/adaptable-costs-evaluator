@@ -1,4 +1,11 @@
 defmodule AdaptableCostsEvaluator.Formulas.Formula do
+  @moduledoc """
+  A `AdaptableCostsEvaluator.Formulas.Formula` represents an expression that
+  that can be used inside the particular `AdaptableCostsEvaluator.Computations.Computation`.
+  The syntax, behavior, and capability of the `AdaptableCostsEvaluator.Formulas.Formula`
+  definition depends on the linked `AdaptableCostsEvaluator.Evaluators.Evaluator`.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,4 +1,9 @@
 defmodule AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluator do
+  @moduledoc """
+  Simple `AdaptableCostsEvaluator.Evaluators.Evaluator` implementation based on
+  the `Abacus` scripting language.
+  """
+
   alias AdaptableCostsEvaluator.Formulas.Formula
   alias AdaptableCostsEvaluator.Evaluators.Evaluator
 
@@ -9,6 +14,7 @@ defmodule AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluator do
   @inputs_regexp ~r/[a-zA-Z_$][a-zA-Z_$0-9]*/
 
   @impl Evaluator
+  @spec evaluate(%Formula{}) :: {:error, binary} | {:ok, number}
   def evaluate(%Formula{} = formula) do
     inputs = parse_inputs_from_formula(formula)
     invalid_inputs = filter_invalid_inputs(inputs)
@@ -26,6 +32,8 @@ defmodule AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluator do
     end
   end
 
+  # Parses `AdaptableCostsEvaluator.Inputs.Input` defined by `label` attribute
+  # from the `AdaptableCostsEvaluator.Formulas.Formula` definition.
   defp parse_inputs_from_formula(%Formula{definition: nil}) do
     %{}
   end

@@ -1,4 +1,17 @@
 defmodule AdaptableCostsEvaluator.Organizations.Role do
+  @moduledoc """
+  The `AdaptableCostsEvaluator.Organizations.Role`s are used within the
+  `AdaptableCostsEvaluator.Organizations.Organization` to determine what a
+  `AdaptableCostsEvaluator.Users.User` is able to do with the resources in the
+  `AdaptableCostsEvaluator.Organizations.Organization`.
+
+  There are currently these `AdaptableCostsEvaluator.Organizations.Role`s available:
+
+  * owner
+  * maintainer
+  * regular
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

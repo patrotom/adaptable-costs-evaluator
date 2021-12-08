@@ -10,6 +10,10 @@ defmodule AdaptableCostsEvaluator.Computations do
   alias AdaptableCostsEvaluator.Users.User
   alias AdaptableCostsEvaluator.{Users, Organizations}
 
+  @doc """
+  Returns the list of computations belonging to the particular user defined by
+  `creator_id` or computations in the organization defined by `organization_id`.
+  """
   def list_computations(creator_id: creator_id) do
     user = Users.get_user!(creator_id)
     Repo.preload(user, :computations).computations
@@ -36,19 +40,22 @@ defmodule AdaptableCostsEvaluator.Computations do
   """
   def get_computation!(id), do: Repo.get!(Computation, id)
 
+  @doc """
+  Gets a single computation defined by the given `attrs`.
+  """
   def get_computation_by!(attrs) do
     Repo.get_by!(Computation, attrs)
   end
 
   @doc """
-  Creates a computation.
+  Creates a computation belonging to the given user.
 
   ## Examples
 
-      iex> create_computation(%{field: value})
+      iex> create_computation(user, %{field: value})
       {:ok, %Computation{}}
 
-      iex> create_computation(%{field: bad_value})
+      iex> create_computation(user, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
@@ -60,6 +67,11 @@ defmodule AdaptableCostsEvaluator.Computations do
     |> Repo.insert()
   end
 
+  @doc """
+  Shares the given computation with the users within the organization.
+
+  It sets `organization_id` attribute of the given computation.
+  """
   def add_computation_to_organization(%Computation{} = computation, organization_id) do
     organization = Organizations.get_organization!(organization_id)
 
@@ -89,11 +101,15 @@ defmodule AdaptableCostsEvaluator.Computations do
   end
 
   @doc """
-  Deletes a computation.
+  Deletes a computation. If `from_org` keyword is set to `true`, it deletes the
+  computation only from the organization.
 
   ## Examples
 
       iex> delete_computation(computation)
+      {:ok, %Computation{}}
+
+      iex> delete_computation(computation, from_org: true)
       {:ok, %Computation{}}
 
       iex> delete_computation(computation)
