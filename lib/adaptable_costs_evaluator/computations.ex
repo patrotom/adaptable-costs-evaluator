@@ -68,7 +68,7 @@ defmodule AdaptableCostsEvaluator.Computations do
   end
 
   @doc """
-  Shares the given computation with the users withing the organization.
+  Shares the given computation with the users within the organization.
 
   It sets `organization_id` attribute of the given computation.
   """
