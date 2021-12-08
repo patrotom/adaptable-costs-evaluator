@@ -110,7 +110,7 @@ The installation of the application is straightforward since it is dockerized. T
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-You can use your favorite HTTP client like [Wget](https://www.gnu.org/software/wget/) to call the API. Refer to the [REST API specification](https://patrotom.github.io/adaptable-costs-evaluator/).
+You can use your favorite HTTP client like [cURL](https://curl.se/) to call the API. Refer to the [REST API specification](https://patrotom.github.io/adaptable-costs-evaluator/).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
