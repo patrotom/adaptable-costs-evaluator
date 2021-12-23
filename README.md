@@ -37,6 +37,7 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#development">Development</a></li>
+    <li><a href="#wiki">Wiki</a></li>
     <li>
       <a href="#contributing">Contributing</a>
       <ul>
