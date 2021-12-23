@@ -750,6 +750,9 @@ defmodule AdaptableCostsEvaluatorWeb.ApiSpec.Schemas do
       * owner
       * maintainer
       * regular
+
+      More information about the role system and authorization can be found
+      in the [project's Wiki](https://github.com/patrotom/adaptable-costs-evaluator/wiki/Role-System-&-Resources).
       """,
       type: :object,
       properties: %{
