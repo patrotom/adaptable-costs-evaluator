@@ -123,6 +123,15 @@ There are a few commands you might find handy while developing the app:
 * `mix test test` - run all tests in the [test](test) directory
 * `mix openapi.spec.json --spec AdaptableCostsEvaluatorWeb.ApiSpec docs/openapi/openapi.json` - compile [OpenAPI](https://www.openapis.org/) from the code
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- Wiki -->
+## Wiki
+
+The [project's Wiki](https://github.com/patrotom/adaptable-costs-evaluator/wiki) contains additional information for the developers who wish to contribute to the code or integrate the application with the foreign systems.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 <!-- CONTRIBUTING -->
 ## Contributing
 
