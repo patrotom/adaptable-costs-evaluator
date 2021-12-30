@@ -34,6 +34,7 @@ defmodule AdaptableCostsEvaluator.FormulasTest do
       formula: formula,
       computation: computation
     } do
+      assert Formulas.get_formula!(formula.id) == formula
       assert Formulas.get_formula!(formula.id, computation) == formula
     end
 
