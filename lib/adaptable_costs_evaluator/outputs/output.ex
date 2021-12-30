@@ -33,6 +33,33 @@ defmodule AdaptableCostsEvaluator.Outputs.Output do
     |> unique_constraint([:label, :computation_id])
     |> FieldValueValidator.validate()
     |> LabelValidator.validate()
+    |> validate_computation_context()
+  end
+
+  defp validate_computation_context(changeset) do
+    if changeset.valid? do
+      changes = changeset.changes
+      formula_id = changes[:formula_id] || changeset.data.formula_id
+      computation_id = changes[:computation_id] || changeset.data.computation_id
+
+      if formula_id == nil do
+        changeset
+      else
+        formula = AdaptableCostsEvaluator.Formulas.get_formula!(formula_id)
+
+        if formula.computation_id == computation_id do
+          changeset
+        else
+          add_error(
+            changeset,
+            :formula_id,
+            "formula is in different computation than the output record"
+          )
+        end
+      end
+    else
+      changeset
+    end
   end
 
   defdelegate authorize(action, user, params),

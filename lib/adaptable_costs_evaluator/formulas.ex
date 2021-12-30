@@ -24,7 +24,8 @@ defmodule AdaptableCostsEvaluator.Formulas do
   end
 
   @doc """
-  Gets a single formula from the computation.
+  Gets a single formula from the computation. If the computation is omitted, it
+  gets the formula only by the ID.
 
   Raises `Ecto.NoResultsError` if the Formula does not exist.
 
@@ -37,8 +38,12 @@ defmodule AdaptableCostsEvaluator.Formulas do
       ** (Ecto.NoResultsError)
 
   """
-  def get_formula!(id, %Computation{} = computation) do
-    Repo.get_by!(Formula, id: id, computation_id: computation.id)
+  def get_formula!(id, computation \\ nil) do
+    if computation == nil do
+      Repo.get!(Formula, id)
+    else
+      Repo.get_by!(Formula, id: id, computation_id: computation.id)
+    end
   end
 
   @doc """

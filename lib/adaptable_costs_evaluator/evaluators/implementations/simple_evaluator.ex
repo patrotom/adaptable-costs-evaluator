@@ -38,11 +38,11 @@ defmodule AdaptableCostsEvaluator.Evaluators.Implementations.SimpleEvaluator do
     %{}
   end
 
-  defp parse_inputs_from_formula(%Formula{definition: definition}) do
+  defp parse_inputs_from_formula(%Formula{definition: definition, computation_id: computation_id}) do
     Regex.scan(@inputs_regexp, definition)
     |> List.flatten()
     |> Enum.uniq()
-    |> Enum.map(fn v -> {v, Inputs.get_by(label: v)} end)
+    |> Enum.map(fn v -> {v, Inputs.get_by(label: v, computation_id: computation_id)} end)
     |> Enum.into(%{})
   end
 
